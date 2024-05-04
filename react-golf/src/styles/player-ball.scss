@@ -1,0 +1,17 @@
+:root {
+  --player-ball-bg-color: #80abff;
+  --player-ball-border-color: #305baf;
+}
+.player-ball {
+  position: absolute;
+  top: 50%;
+  translate: 0 -50%;
+  left: 2.5rem;
+
+  width: 1.25rem;
+  height: 1.25rem;
+
+  background-color: var(--player-ball-bg-color);
+  border: 0.25rem solid var(--player-ball-border-color);
+  border-radius: 50%;
+}

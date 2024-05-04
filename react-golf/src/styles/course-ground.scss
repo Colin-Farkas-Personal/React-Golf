@@ -1,0 +1,17 @@
+:root {
+  --course-ground-bg-color: #ebf3f1;
+  --course-ground-border-color: #00c28d;
+}
+.course-ground {
+  position: relative;
+
+  border-radius: 1.25rem;
+  border: 0.375rem solid var(--course-ground-border-color);
+
+  background-color: var(--course-ground-bg-color);
+}
+
+.course-small {
+  width: 25rem;
+  height: 12.5rem;
+}
