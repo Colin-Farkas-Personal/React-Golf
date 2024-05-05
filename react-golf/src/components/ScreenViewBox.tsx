@@ -1,6 +1,7 @@
 import React, { ReactNode, useRef, useState } from "react";
 import "../styles/screen-view-box.scss";
 import { cancelBallMove, handleBallMovement } from "./logic/movement";
+import { hideOutline, showOutline } from "./MouseOutline";
 
 interface ScreenViewBox {
   children: ReactNode;
@@ -11,33 +12,32 @@ function ScreenViewBox({ children }: ScreenViewBox) {
   const screenViewRef = useRef<null | HTMLDivElement>(null);
 
   function startTilt(e: React.MouseEvent<HTMLDivElement, MouseEvent>) {
+    setIsMouseDown(true);
+
+    // Course active
     const courseGroundElement =
       screenViewRef.current?.querySelector(".course-ground");
     courseGroundElement?.classList.add("course-tilt-active");
 
+    // Mouse Outline
     const mouseOutlineElement = screenViewRef.current?.querySelector(
       ".mouse-outline"
     ) as HTMLElement;
-    const widthSelf = getComputedStyle(mouseOutlineElement).width;
-    const heightSelf = getComputedStyle(mouseOutlineElement).height;
-    mouseOutlineElement.style.visibility = "visible";
-    mouseOutlineElement.style.left =
-      e.clientX - parseInt(widthSelf) * 0.5 + "px";
-    mouseOutlineElement.style.top =
-      e.clientY - parseInt(heightSelf) * 0.5 + "px";
+    showOutline(mouseOutlineElement);
 
-    setIsMouseDown(true);
-
+    // Mouse Position ORIGIN
     const mousePositionStart = [e.clientX, e.clientY];
     setMousePositionStart(mousePositionStart);
   }
 
   function moveTilt(e: React.MouseEvent<HTMLDivElement, MouseEvent>) {
     if (isMouseDown) {
+      // Mouse distance moved
       const currentPos = [e.clientX, e.clientY];
       const distanceX = currentPos[0] - mousePositionStart[0];
       const distanceY = currentPos[1] - mousePositionStart[1];
 
+      // Max distance
       const MAX_DEG_X = 40;
       let degX = Math.max(Math.min(distanceX, MAX_DEG_X), -MAX_DEG_X) * -1;
       const MAX_DEG_Y = 40;
@@ -46,12 +46,14 @@ function ScreenViewBox({ children }: ScreenViewBox) {
       const courseGroundElement = screenViewRef.current?.querySelector(
         ".course-ground"
       ) as HTMLAnchorElement;
-
+      // Tilt course
       courseGroundElement.style.transform = `rotateX(${degY}deg) rotateY(${
         degX * -1
       }deg)`;
+      // Move shadow
       courseGroundElement.style.boxShadow = `${degX}px ${degY}px 20px 0px #595c5c46`;
 
+      // Move player ball
       const playerBallElement =
         screenViewRef.current?.getElementsByClassName("player-ball")[0];
 
@@ -72,8 +74,8 @@ function ScreenViewBox({ children }: ScreenViewBox) {
     setIsMouseDown(false);
     cancelBallMove();
 
+    // Reset styles
     if (courseGroundElement instanceof HTMLElement) {
-      // Change the style properties as needed
       courseGroundElement.style.transform = "";
       courseGroundElement.style.boxShadow = "";
       courseGroundElement.style.scale = "";
@@ -82,7 +84,7 @@ function ScreenViewBox({ children }: ScreenViewBox) {
     const mouseOutlineElement = screenViewRef.current?.querySelector(
       ".mouse-outline"
     ) as HTMLElement;
-    mouseOutlineElement.style.visibility = "hidden";
+    hideOutline(mouseOutlineElement);
   }
 
   return (
