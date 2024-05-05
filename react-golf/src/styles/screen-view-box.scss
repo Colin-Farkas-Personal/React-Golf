@@ -1,0 +1,11 @@
+.screen-view-box {
+  position: relative;
+
+  width: 100lvw;
+  max-width: 1400px;
+  height: 100lvh;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

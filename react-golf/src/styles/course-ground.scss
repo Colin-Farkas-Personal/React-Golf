@@ -1,6 +1,7 @@
 :root {
   --course-ground-bg-color: #ebf3f1;
   --course-ground-border-color: #00c28d;
+  --course-ground-box-shadow-color: #595c5c46;
 }
 .course-ground {
   position: relative;
@@ -9,9 +10,26 @@
   border: 0.375rem solid var(--course-ground-border-color);
 
   background-color: var(--course-ground-bg-color);
+
+  transition: all 150ms ease-out;
 }
 
 .course-small {
   width: 25rem;
   height: 12.5rem;
+}
+
+.course-tilt-active {
+  transform: rotateX(30deg);
+  transform: scale(1.1);
+  box-shadow: 0 4px 20px 0px var(--course-ground-box-shadow-color);
+}
+
+.course-flag-hole {
+  position: absolute;
+  top: calc(50% - 25px);
+  translate: 0 -50%;
+  right: -4rem;
+  width: 7.5rem;
+  height: 7.5rem;
 }
