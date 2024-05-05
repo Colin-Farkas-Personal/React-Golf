@@ -1,0 +1,10 @@
+.mouse-outline {
+  z-index: 999;
+  visibility: hidden;
+  display: inline;
+  position: absolute;
+  width: 120px;
+  height: 120px;
+  border: 4px dashed rgb(190, 190, 190);
+  border-radius: 50%;
+}
