@@ -1,11 +1,16 @@
 import "../styles/mouse-outline.scss";
 
-export function showOutline(mouseOutlineElement: HTMLElement) {
+export function showOutline(
+  mouseOutlineElement: HTMLElement,
+  eventTarget: React.MouseEvent<HTMLDivElement, MouseEvent>
+) {
   const widthSelf = getComputedStyle(mouseOutlineElement).width;
   const heightSelf = getComputedStyle(mouseOutlineElement).height;
   mouseOutlineElement.style.visibility = "visible";
-  mouseOutlineElement.style.left = e.clientX - parseInt(widthSelf) * 0.5 + "px";
-  mouseOutlineElement.style.top = e.clientY - parseInt(heightSelf) * 0.5 + "px";
+  mouseOutlineElement.style.left =
+    eventTarget.clientX - parseInt(widthSelf) * 0.5 + "px";
+  mouseOutlineElement.style.top =
+    eventTarget.clientY - parseInt(heightSelf) * 0.5 + "px";
 }
 
 export function hideOutline(mouseOutlineElement: HTMLElement) {

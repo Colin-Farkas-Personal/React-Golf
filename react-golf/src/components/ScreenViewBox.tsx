@@ -23,7 +23,7 @@ function ScreenViewBox({ children }: ScreenViewBox) {
     const mouseOutlineElement = screenViewRef.current?.querySelector(
       ".mouse-outline"
     ) as HTMLElement;
-    showOutline(mouseOutlineElement);
+    showOutline(mouseOutlineElement, e);
 
     // Mouse Position ORIGIN
     const mousePositionStart = [e.clientX, e.clientY];
