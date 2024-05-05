@@ -26,16 +26,15 @@ function ScreenViewBox({ children }: ScreenViewBox) {
       const distanceX = currentPos[0] - mousePositionStart[0];
       const distanceY = currentPos[1] - mousePositionStart[1];
 
-      console.log("X: ", distanceX, "Y: ", distanceY);
+      const MAX_DEG_X = 50;
+      let degX = Math.max(Math.min(distanceX, MAX_DEG_X), -MAX_DEG_X) * -1;
+      const MAX_DEG_Y = 50;
+      let degY = Math.max(Math.min(distanceY, MAX_DEG_Y), -MAX_DEG_Y) * -1;
+
       const courseGroundElement =
         screenViewRef.current?.querySelector(".course-ground");
 
       if (courseGroundElement instanceof HTMLElement) {
-        const MAX_DEG_X = 50;
-        let degX = Math.max(Math.min(distanceX, MAX_DEG_X), -MAX_DEG_X) * -1;
-        const MAX_DEG_Y = 50;
-        let degY = Math.max(Math.min(distanceY, MAX_DEG_Y), -MAX_DEG_Y) * -1;
-
         courseGroundElement.style.transform = `rotateX(${degY}deg) rotateY(${
           degX * -1
         }deg)`;
