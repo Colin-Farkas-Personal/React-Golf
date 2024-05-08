@@ -1,12 +1,18 @@
 import React, { ReactNode, useRef, useState } from "react";
 import "../styles/screen-view-box.scss";
-import { cancelBallMove, handleBallMovement } from "./logic/movement";
-import { hideOutline, showOutline } from "./MouseOutline";
+import { movePlayerBall, stopPlayerBall } from "./logic/movement";
+import { getTiltProcent, resetTilt, tiltElement } from "./logic/tilt";
+import { calculateElementShadow, removeElementShadow } from "./logic/shadow";
+
+// Distance that mouse needs travel for max tilt
+const MAX_DISTANCE_X = 60;
+const MAX_DISTANCE_Y = 60;
 
 interface ScreenViewBox {
+  maxCourseTilt: number;
   children: ReactNode;
 }
-function ScreenViewBox({ children }: ScreenViewBox) {
+function ScreenViewBox({ maxCourseTilt, children }: ScreenViewBox) {
   const [isMouseDown, setIsMouseDown] = useState(false);
   const [mousePositionStart, setMousePositionStart] = useState<number[]>([]);
   const screenViewRef = useRef<null | HTMLDivElement>(null);
@@ -19,72 +25,70 @@ function ScreenViewBox({ children }: ScreenViewBox) {
       screenViewRef.current?.querySelector(".course-ground");
     courseGroundElement?.classList.add("course-tilt-active");
 
-    // Mouse Outline
-    const mouseOutlineElement = screenViewRef.current?.querySelector(
-      ".mouse-outline"
-    ) as HTMLElement;
-    showOutline(mouseOutlineElement, e);
-
     // Mouse Position ORIGIN
     const mousePositionStart = [e.clientX, e.clientY];
     setMousePositionStart(mousePositionStart);
+
+    // TEST ANIMATION
+    // const playerBallElement = screenViewRef.current?.querySelector(
+    //   ".player-ball"
+    // ) as HTMLElement;
+    // movePlayerBallTest(playerBallElement);
   }
 
-  function moveTilt(e: React.MouseEvent<HTMLDivElement, MouseEvent>) {
+  async function moveTilt(e: React.MouseEvent<HTMLDivElement, MouseEvent>) {
     if (isMouseDown) {
       // Mouse distance moved
-      const currentPos = [e.clientX, e.clientY];
-      const distanceX = currentPos[0] - mousePositionStart[0];
-      const distanceY = currentPos[1] - mousePositionStart[1];
+      const distanceX = e.clientX - mousePositionStart[0];
+      const distanceY = e.clientY - mousePositionStart[1];
 
       // Max distance
-      const MAX_DEG_X = 40;
-      let degX = Math.max(Math.min(distanceX, MAX_DEG_X), -MAX_DEG_X) * -1;
-      const MAX_DEG_Y = 40;
-      let degY = Math.max(Math.min(distanceY, MAX_DEG_Y), -MAX_DEG_Y) * -1;
+      const procentX = getTiltProcent(distanceX, MAX_DISTANCE_X);
+      const procentY = getTiltProcent(distanceY, MAX_DISTANCE_Y);
 
       const courseGroundElement = screenViewRef.current?.querySelector(
         ".course-ground"
-      ) as HTMLAnchorElement;
+      ) as HTMLElement;
+      const playerBallElement = screenViewRef.current?.querySelector(
+        ".player-ball"
+      ) as HTMLElement;
+
       // Tilt course
-      courseGroundElement.style.transform = `rotateX(${degY}deg) rotateY(${
-        degX * -1
-      }deg)`;
+      tiltElement(courseGroundElement, [procentX, procentY], maxCourseTilt);
+
       // Move shadow
-      courseGroundElement.style.boxShadow = `${degX}px ${degY}px 20px 0px #595c5c46`;
+      calculateElementShadow(
+        courseGroundElement,
+        [procentX, procentY],
+        "small"
+      );
+      calculateElementShadow(playerBallElement, [procentX, procentY], "big");
 
       // Move player ball
-      const playerBallElement =
-        screenViewRef.current?.getElementsByClassName("player-ball")[0];
-
-      if (playerBallElement) {
-        const procentX =
-          Math.max(Math.min(distanceX, MAX_DEG_X), -MAX_DEG_X) / MAX_DEG_X;
-        const procentY =
-          Math.max(Math.min(distanceY, MAX_DEG_Y), -MAX_DEG_Y) / MAX_DEG_Y;
-        handleBallMovement(playerBallElement, [procentX, procentY]);
-      }
+      await movePlayerBall(playerBallElement, [procentX, procentY], 2);
     }
   }
   function stopTilt() {
-    const courseGroundElement =
-      screenViewRef.current?.querySelector(".course-ground");
-    courseGroundElement?.classList.remove("course-tilt-active");
-
-    setIsMouseDown(false);
-    cancelBallMove();
-
-    // Reset styles
-    if (courseGroundElement instanceof HTMLElement) {
-      courseGroundElement.style.transform = "";
-      courseGroundElement.style.boxShadow = "";
-      courseGroundElement.style.scale = "";
-    }
-
-    const mouseOutlineElement = screenViewRef.current?.querySelector(
-      ".mouse-outline"
+    const courseGroundElement = screenViewRef.current?.querySelector(
+      ".course-ground"
     ) as HTMLElement;
-    hideOutline(mouseOutlineElement);
+    const playerBallElement = screenViewRef.current?.querySelector(
+      ".player-ball"
+    ) as HTMLElement;
+
+    // Reset tilt
+    resetTilt(courseGroundElement);
+
+    // Remove shadow
+    removeElementShadow(courseGroundElement);
+    removeElementShadow(playerBallElement);
+
+    // Stop player ball
+    stopPlayerBall();
+
+    // Remove class active
+    courseGroundElement.classList.remove("course-tilt-active");
+    setIsMouseDown(false);
   }
 
   return (

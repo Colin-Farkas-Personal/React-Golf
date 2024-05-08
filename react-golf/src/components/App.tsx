@@ -2,12 +2,11 @@ import CourseGround from "./CourseGround";
 import "../styles/general.scss";
 import PlayerBall from "./PlayerBall";
 import ScreenViewBox from "./ScreenViewBox";
-import MouseOutline from "./MouseOutline";
 
 function App() {
   return (
-    <ScreenViewBox>
-      <MouseOutline />
+    <ScreenViewBox maxCourseTilt={40}>
+      {/* <MouseOutline /> */}
       <CourseGround size="small">
         <PlayerBall />
       </CourseGround>

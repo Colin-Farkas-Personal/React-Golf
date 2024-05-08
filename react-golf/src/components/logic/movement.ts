@@ -1,36 +1,70 @@
-let animationId: number;
+let requestAnimationFrameId: number;
+let velocityX = 0;
+let velocityY = 0;
 
-export function handleBallMovement(ball: Element, degrees: number[]) {
-  if (animationId > 0) {
-    cancelBallMove();
+const inertia = 0.01;
+const maxSpeed = 10;
+let isStopping = false;
+const deceleration = 0.995;
+
+export async function movePlayerBall(
+  ball: HTMLElement,
+  direction: [number, number],
+  speed: number
+) {
+  isStopping = false;
+  cancelAnimationFrame(requestAnimationFrameId);
+  moveBall(ball, direction, speed);
+}
+
+function normalizeVelocity() {
+  const currentSpeed = Math.hypot(velocityX, velocityY);
+  if (currentSpeed > maxSpeed) {
+    velocityX = (velocityX / currentSpeed) * maxSpeed;
+    velocityY = (velocityY / currentSpeed) * maxSpeed;
+  }
+}
+
+async function moveBall(
+  ball: HTMLElement,
+  direction: [number, number],
+  targetSpeed: number
+) {
+  const [dirX, dirY] = direction;
+
+  velocityX += (dirX * targetSpeed - velocityX) * inertia;
+  velocityY += (dirY * targetSpeed - velocityY) * inertia;
+
+  if (isStopping) {
+    velocityX *= deceleration;
+    velocityY *= deceleration;
+
+    if (Math.abs(velocityX) < 0.01 && Math.abs(velocityY) < 0.01) {
+      velocityX = 0;
+      velocityY = 0;
+      isStopping = false;
+      cancelAnimationFrame(requestAnimationFrameId);
+      return;
+    }
   }
 
-  animationId = requestAnimationFrame(function () {
-    moveit(ball, degrees);
+  normalizeVelocity();
+
+  const currentLeft = parseFloat(getComputedStyle(ball).left);
+  const currentTop = parseFloat(getComputedStyle(ball).top);
+
+  ball.style.left = `${currentLeft + velocityX}px`;
+  ball.style.top = `${currentTop + velocityY}px`;
+
+  requestAnimationFrameId = requestAnimationFrame(async function () {
+    if (isStopping) {
+      moveBall(ball, [0, 0], 0);
+    } else {
+      moveBall(ball, direction, targetSpeed);
+    }
   });
 }
 
-async function moveit(el: Element, degrees: number[]) {
-  // Move the el
-  const [x, y] = degrees;
-  const currentLeft = parseFloat(getComputedStyle(el).left);
-  const currentTop = parseFloat(getComputedStyle(el).top);
-  const elInline = el as HTMLElement;
-  elInline.style.left = `${currentLeft + x}px`;
-  elInline.style.top = `${currentTop + y}px`;
-
-  animationId = requestAnimationFrame(async function () {
-    await moveit(el, degrees);
-  });
-}
-function easeOutSine(x: number): number {
-  return Math.sin((x * Math.PI) / 2);
-}
-function easeInOutSine(x: number): number {
-  return -(Math.cos(Math.PI * x) - 1) / 2;
-}
-
-export function cancelBallMove(timeToStop?: number) {
-  cancelAnimationFrame(animationId);
-  animationId = 0;
+export function stopPlayerBall() {
+  isStopping = true;
 }
