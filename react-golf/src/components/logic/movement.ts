@@ -1,3 +1,8 @@
+import {
+  handleCollisionWithTilt,
+  isCollidingWithFlag,
+} from "./collisionHandler";
+
 let requestAnimationFrameId: number;
 let velocityX = 0;
 let velocityY = 0;
@@ -53,6 +58,12 @@ async function moveBall(
   const currentLeft = parseFloat(getComputedStyle(ball).left);
   const currentTop = parseFloat(getComputedStyle(ball).top);
 
+  [velocityX, velocityY] = handleCollisionWithTilt(ball, velocityX, velocityY);
+  if (isCollidingWithFlag(ball)) {
+    console.log("Nicely done!");
+    stopPlayerBall();
+    return;
+  }
   ball.style.left = `${currentLeft + velocityX}px`;
   ball.style.top = `${currentTop + velocityY}px`;
 

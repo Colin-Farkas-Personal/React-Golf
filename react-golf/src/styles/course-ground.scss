@@ -12,6 +12,32 @@
   background-color: var(--course-ground-bg-color);
 
   transition: all 150ms ease-out;
+
+  .course-corner {
+    position: absolute;
+    width: 0;
+    height: 0;
+
+    &-tl {
+      top: 0;
+      left: 0;
+    }
+
+    &-tr {
+      top: 0;
+      right: 0;
+    }
+
+    &-bl {
+      bottom: 0;
+      left: 0;
+    }
+
+    &-br {
+      bottom: 0;
+      right: 0;
+    }
+  }
 }
 
 .course-small {

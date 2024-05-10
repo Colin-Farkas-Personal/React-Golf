@@ -3,6 +3,7 @@ import "../styles/screen-view-box.scss";
 import { movePlayerBall, stopPlayerBall } from "./logic/movement";
 import { getTiltProcent, resetTilt, tiltElement } from "./logic/tilt";
 import { calculateElementShadow, removeElementShadow } from "./logic/shadow";
+import { getBoundaryDirection } from "./logic/collisionHandler";
 
 // Distance that mouse needs travel for max tilt
 const MAX_DISTANCE_X = 60;
