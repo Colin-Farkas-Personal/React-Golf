@@ -1,0 +1,5 @@
+<svg id="flag-finish" width="53" height="111" viewBox="0 0 53 111" fill="none" xmlns="http://www.w3.org/2000/svg">
+<circle id="flag-finish-hole" cx="25" cy="93" r="18" fill="#33584F"/>
+<path id="flag-finish-pole" d="M1.52896 3.33984C0.870995 1.89533 2.07828 0.302296 3.64906 0.530772L27.5 4C38.706 5.41131 44.2622 7.96744 49.9076 14.6615C51.5415 16.5989 51.5443 19.3954 50.1121 21.4863L27.5 54.5V95H23.5L15 82C15 82 13 68 12 65.5C11 63 4.5 56.5 4.5 52C4.5 47.5 15 39.5 15 36C15 33.1924 5.34798 11.7243 1.52896 3.33984Z" fill="#EA6B6B" fill-opacity="0.7"/>
+<circle id="flag-finish-fabric" cx="25" cy="93" r="4" fill="white"/>
+</svg>

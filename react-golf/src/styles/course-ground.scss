@@ -1,15 +1,17 @@
 :root {
-  --course-ground-bg-color: #e1e9e7;
-  --course-ground-border-color: #00c28d;
-  --course-ground-box-shadow-color: #595c5c46;
+  --course-ground-color-bg: #e1e9e7;
+  --course-ground-color-border: #00c28d;
+  --course-ground-color-box-shadow: #595c5c46;
+  --course-flag-hole-color-bg: #33584f;
 }
 .course-ground {
+  z-index: 0;
   position: relative;
 
   border-radius: 2.75rem;
-  border: 0.75rem solid var(--course-ground-border-color);
+  border: 0.75rem solid var(--course-ground-color-border);
 
-  background-color: var(--course-ground-bg-color);
+  background-color: var(--course-ground-color-bg);
 
   transition: all 150ms ease-out;
 
@@ -46,14 +48,48 @@
 }
 
 .course-tilt-active {
-  box-shadow: 0 4px 20px 0px var(--course-ground-box-shadow-color);
+  box-shadow: 0 4px 20px 0px var(--course-ground-color-box-shadow);
 }
 
-.course-flag-hole {
+.course-flag {
+  z-index: 1;
+  overflow: visible;
+
   position: absolute;
-  top: calc(50% - 25px);
+  top: 50%;
   translate: 0 -50%;
-  right: -4rem;
-  width: 7.5rem;
-  height: 7.5rem;
+  right: 0rem;
+  width: 6.25rem;
+  height: 6.25rem;
+
+  .course-flag-hole {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+    width: 1.875rem;
+    height: 1.875rem;
+
+    background-color: var(--course-flag-hole-color-bg);
+    border-radius: 50%;
+  }
+
+  .stars {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    opacity: 0;
+
+    width: 6rem;
+    height: 6rem;
+
+    transition: transform 250ms ease-out, opacity 250ms ease-out; // Add this line
+  }
+
+  .stars-visible {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+  }
 }

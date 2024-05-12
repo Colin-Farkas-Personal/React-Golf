@@ -1,0 +1,28 @@
+@import url("https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap");
+
+:root {
+  --title-color-text: #bababa;
+  --title-outlined-color-text: #5aa895;
+}
+
+.title {
+  position: absolute;
+  top: 15%;
+  left: 50%;
+  translate: -50% 0;
+
+  max-width: 550px;
+
+  color: var(--title-color-text);
+  text-align: center;
+  font-size: 32px;
+  font-family: "Noto Sans", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 600;
+  font-style: normal;
+  font-variation-settings: "wdth" 100;
+
+  .title-outlined {
+    color: var(--title-outlined-color-text);
+  }
+}

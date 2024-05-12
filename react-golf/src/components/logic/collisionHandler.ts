@@ -163,7 +163,7 @@ export function isCollidingWithFlag(ball: HTMLElement) {
     courseElement = document.querySelector(".course-ground") as HTMLElement;
   }
 
-  const flagHoleElement = courseElement.querySelector(".course-flag-hole");
+  const flagHoleElement = courseElement.querySelector("#course-flag-hole");
   if (!flagHoleElement) {
     return false;
   }
@@ -171,10 +171,11 @@ export function isCollidingWithFlag(ball: HTMLElement) {
   const ballRect = ball.getBoundingClientRect();
   const flagHoleRect = flagHoleElement.getBoundingClientRect();
 
+  // Return true if ball is inside of the flag hole
   return (
-    ballRect.left < flagHoleRect.right &&
-    ballRect.right > flagHoleRect.left &&
-    ballRect.top < flagHoleRect.bottom &&
-    ballRect.bottom > flagHoleRect.top
+    ballRect.left >= flagHoleRect.left &&
+    ballRect.right <= flagHoleRect.right &&
+    ballRect.top >= flagHoleRect.top &&
+    ballRect.bottom <= flagHoleRect.bottom
   );
 }
