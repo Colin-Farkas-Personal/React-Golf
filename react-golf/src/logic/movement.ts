@@ -8,7 +8,7 @@ let velocityX = 0;
 let velocityY = 0;
 
 const inertia = 0.01;
-const maxSpeed = 10;
+const maxSpeed = 20;
 let isStopping = false;
 const deceleration = 0.995;
 

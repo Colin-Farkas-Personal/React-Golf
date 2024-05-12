@@ -39,20 +39,11 @@ function rayInterceptsCircle(ray: Ray, circle: Circle): boolean {
   return nx * nx + ny * ny < circle.radius * circle.radius;
 }
 
-export function handleCollisionWithTilt(
-  ball: HTMLElement,
-  velocityX: number,
-  velocityY: number
-) {
-  // If courseElement is null, try to query it again
+function queryCoursePointElements() {
   if (!courseElement) {
     courseElement = document.querySelector(".course-ground") as HTMLElement;
   }
 
-  let newVelocityX = velocityX;
-  let newVelocityY = velocityY;
-
-  // Query the corner elements
   const topLeftElement = document.querySelector(
     ".course-corner-tl"
   ) as HTMLElement;
@@ -66,97 +57,105 @@ export function handleCollisionWithTilt(
     ".course-corner-br"
   ) as HTMLElement;
 
+  return {
+    topLeftElement,
+    topRightElement,
+    bottomLeftElement,
+    bottomRightElement,
+  };
+}
+
+interface CoursePointElements {
+  topLeftElement: HTMLElement;
+  topRightElement: HTMLElement;
+  bottomLeftElement: HTMLElement;
+  bottomRightElement: HTMLElement;
+}
+function createRaysAndCircle(
+  ball: HTMLElement,
+  coursePointElements: CoursePointElements
+) {
+  const {
+    topLeftElement,
+    topRightElement,
+    bottomLeftElement,
+    bottomRightElement,
+  } = coursePointElements;
+
   // Get the coordinates of the corners
   const tL = topLeftElement.getBoundingClientRect();
   const tR = topRightElement.getBoundingClientRect();
   const bL = bottomLeftElement.getBoundingClientRect();
   const bR = bottomRightElement.getBoundingClientRect();
-
   const ballRect = ball.getBoundingClientRect();
+
   // Get x and y of the ball
   const ballX = ballRect.left + ballRect.width / 2;
   const ballY = ballRect.top + ballRect.height / 2;
   const ballRadius = parseFloat(getComputedStyle(ball).width) / 2;
 
-  const rayTop: Ray = { p1: tL, p2: tR };
-  const rayRight: Ray = { p1: tR, p2: bR };
-  const rayBottom: Ray = { p1: bR, p2: bL };
-  const rayLeft: Ray = { p1: bL, p2: tL };
+  const rays = {
+    rayTop: { p1: tL, p2: tR },
+    rayRight: { p1: tR, p2: bR },
+    rayBottom: { p1: bR, p2: bL },
+    rayLeft: { p1: bL, p2: tL },
+  };
+
   const circle: Circle = { x: ballX, y: ballY, radius: ballRadius };
 
-  if (rayInterceptsCircle(rayTop, circle)) {
+  return { rays, circle };
+}
+
+export function handleCollisionWithTilt(
+  ball: HTMLElement,
+  velocityX: number,
+  velocityY: number
+) {
+  // If courseElement is null, try to query it again
+  if (!courseElement) {
+    courseElement = document.querySelector(".course-ground") as HTMLElement;
+  }
+
+  let newVelocityX = velocityX;
+  let newVelocityY = velocityY;
+
+  const coursePointElements = queryCoursePointElements();
+  const { rays, circle } = createRaysAndCircle(ball, coursePointElements);
+
+  if (rayInterceptsCircle(rays.rayTop, circle)) {
+    if (velocityY > 0) {
+      return [velocityX, velocityY * DAMPENING];
+    }
+
     newVelocityY = -velocityY * DAMPENING;
   }
 
-  if (rayInterceptsCircle(rayRight, circle)) {
+  if (rayInterceptsCircle(rays.rayRight, circle)) {
+    if (velocityX < 0) {
+      return [velocityX * DAMPENING, velocityY];
+    }
+
     newVelocityX = -velocityX * DAMPENING;
   }
 
-  if (rayInterceptsCircle(rayBottom, circle)) {
+  if (rayInterceptsCircle(rays.rayBottom, circle)) {
+    if (velocityY < 0) {
+      return [velocityX, velocityY * DAMPENING];
+    }
+
     newVelocityY = -velocityY * DAMPENING;
   }
 
-  if (rayInterceptsCircle(rayLeft, circle)) {
+  if (rayInterceptsCircle(rays.rayLeft, circle)) {
+    if (velocityX > 0) {
+      return [velocityX * DAMPENING, velocityY];
+    }
+
     newVelocityX = -velocityX * DAMPENING;
   }
 
   return [newVelocityX, newVelocityY];
 }
-
-// export function handleBoundaryCollision(
-//   ball: HTMLElement,
-//   velocityX: number,
-//   velocityY: number
-// ): [number, number] {
-//   let newVelocityX = velocityX;
-//   let newVelocityY = velocityY;
-
-//   // If courseElement is null, try to query it again
-//   if (!courseElement) {
-//     courseElement = document.querySelector(".course-ground") as HTMLElement;
-//   }
-
-//   // If courseElement is still null, return the original direction
-//   if (!courseElement) {
-//     newVelocityX = velocityX;
-//     newVelocityY = velocityY;
-//   }
-
-//   // Get the dimensions of the ball and the course
-//   const ballRect = ball.getBoundingClientRect();
-//   const courseRect = courseElement.getBoundingClientRect();
-//   const courseBorderWidth = parseFloat(
-//     parseFloat(getComputedStyle(courseElement).borderWidth).toFixed(3)
-//   );
-
-//   // Predict the new position of the ball
-//   const newBallRect = {
-//     left: parseFloat(ballRect.left.toFixed(3)),
-//     right: parseFloat(ballRect.right.toFixed(3)),
-//     top: parseFloat(ballRect.top.toFixed(3)),
-//     bottom: parseFloat(ballRect.bottom.toFixed(3)),
-//   };
-
-//   // Check if the ball would hit the left or right boundary
-//   const hitHorizontalBoundary =
-//     newBallRect.left < courseRect.left + courseBorderWidth ||
-//     newBallRect.right > courseRect.right - courseBorderWidth;
-
-//   // Check if the ball would hit the top or bottom boundary
-//   const hitVerticalBoundary =
-//     newBallRect.top < courseRect.top + courseBorderWidth ||
-//     newBallRect.bottom > courseRect.bottom - courseBorderWidth;
-
-//   if (hitVerticalBoundary) {
-//     newVelocityY = -velocityY;
-//     newVelocityX = -velocityX;
-//   }
-//   if (hitHorizontalBoundary) {
-//     newVelocityX = -velocityX;
-//   }
-
-//   return [newVelocityX, newVelocityY];
-// }
 
 export function isCollidingWithFlag(ball: HTMLElement) {
   if (!courseElement) {

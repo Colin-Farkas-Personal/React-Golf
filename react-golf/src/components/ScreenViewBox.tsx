@@ -1,8 +1,8 @@
 import React, { ReactNode, useRef, useState } from "react";
 import "../styles/screen-view-box.scss";
-import { movePlayerBall, stopPlayerBall } from "./logic/movement";
-import { getTiltProcent, resetTilt, tiltElement } from "./logic/tilt";
-import { calculateElementShadow, removeElementShadow } from "./logic/shadow";
+import { movePlayerBall, stopPlayerBall } from "../logic/movement";
+import { getTiltProcent, resetTilt, tiltElement } from "../logic/tilt";
+import { calculateElementShadow, removeElementShadow } from "../logic/shadow";
 import { useGameContext } from "../contexts/gameStateContext";
 
 // Distance that mouse needs travel for max tilt

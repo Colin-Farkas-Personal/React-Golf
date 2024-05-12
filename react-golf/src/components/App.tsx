@@ -12,7 +12,7 @@ function App() {
     <GameStateProvider>
       <ScreenViewBox maxCourseTilt={40}>
         {/* <MouseOutline /> */}
-        <Title text="<outline>Hold down</outline> the mouse button to tilt the course" />
+        <Title text="<outline>Hold down</outline> the mouse button and <outline>move the mouse</outline> to tilt the course" />
         <CourseGround size="small">
           <PlayerBall />
         </CourseGround>
