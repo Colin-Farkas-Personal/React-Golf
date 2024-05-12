@@ -10,7 +10,11 @@ function CourseGround({ size, children }: CourseGround) {
   const { isBallInHole } = useGameContext();
 
   return (
-    <div className={`course-ground course-${size}`}>
+    <div
+      className={`course-ground course-${size} ${
+        isBallInHole && "success-animation"
+      }`}
+    >
       <span className="course-corner course-corner-tl" />
       <span className="course-corner course-corner-tr" />
       <span className="course-corner course-corner-bl" />
