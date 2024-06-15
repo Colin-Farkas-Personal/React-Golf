@@ -1,6 +1,5 @@
 import {
-  handleCollisionWithTilt,
-  isCollidingWithFlag,
+  handleCollisionWithTilt
 } from "./collisionHandler";
 
 let requestAnimationFrameId: number;
@@ -14,13 +13,12 @@ const deceleration = 0.995;
 
 export async function movePlayerBall(
   ball: HTMLElement,
-  direction: [number, number],
+  direction: Velocity,
   speed: number,
-  setIsBallInHole: (isBallInHole: boolean) => void
 ) {
   isStopping = false;
   cancelAnimationFrame(requestAnimationFrameId);
-  moveBall(ball, direction, speed, setIsBallInHole);
+  moveBall(ball, direction, speed);
 }
 
 function normalizeVelocity() {
@@ -33,9 +31,8 @@ function normalizeVelocity() {
 
 async function moveBall(
   ball: HTMLElement,
-  direction: [number, number],
-  targetSpeed: number,
-  setIsBallInHole: (isBallInHole: boolean) => void
+  direction: Velocity,
+  targetSpeed: number
 ) {
   const [dirX, dirY] = direction;
 
@@ -61,19 +58,15 @@ async function moveBall(
   const currentTop = parseFloat(getComputedStyle(ball).top);
 
   [velocityX, velocityY] = handleCollisionWithTilt(ball, velocityX, velocityY);
-  if (isCollidingWithFlag(ball)) {
-    setIsBallInHole(true);
-    return;
-  }
 
   ball.style.left = `${currentLeft + velocityX}px`;
   ball.style.top = `${currentTop + velocityY}px`;
 
   requestAnimationFrameId = requestAnimationFrame(async function () {
     if (isStopping) {
-      moveBall(ball, [0, 0], 0, setIsBallInHole);
+      moveBall(ball, [0, 0], 0);
     } else {
-      moveBall(ball, direction, targetSpeed, setIsBallInHole);
+      moveBall(ball, direction, targetSpeed);
     }
   });
 }

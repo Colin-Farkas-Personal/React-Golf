@@ -1,27 +1,37 @@
 // context.js
 import { createContext, useContext, useState } from "react";
 
-interface ThemeContextType {
+interface ThemeContext {
   isBallInHole: boolean;
   setIsBallInHole: (isBallInHole: boolean) => void;
-}
+  isHoleProximity: boolean;
+  setIsHoleProximity: (isHoleProximity: boolean) => void;
+};
 
 const defaultThemeContext = {
   isBallInHole: false,
   setIsBallInHole: () => {},
+  isHoleProximity: false,
+  setIsHoleProximity: () => {},
 };
 
 export const GameStateContext =
-  createContext<ThemeContextType>(defaultThemeContext);
+  createContext<ThemeContext>(defaultThemeContext);
 
 interface GameStateProviderProps {
   children: React.ReactNode;
 }
 export const GameStateProvider = ({ children }: GameStateProviderProps) => {
   const [isBallInHole, setIsBallInHole] = useState(false);
+  const [isHoleProximity, setIsHoleProximity] = useState(false);
 
   return (
-    <GameStateContext.Provider value={{ isBallInHole, setIsBallInHole }}>
+    <GameStateContext.Provider value={{ 
+      isBallInHole, 
+      setIsBallInHole, 
+      isHoleProximity, 
+      setIsHoleProximity 
+    }}>
       {children}
     </GameStateContext.Provider>
   );

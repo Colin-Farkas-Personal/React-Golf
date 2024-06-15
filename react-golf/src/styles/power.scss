@@ -1,0 +1,22 @@
+:root {
+  --power-color: #5aa895;
+  --power-color-disabled: #5aa89548;
+}
+
+.power {
+  position: absolute;
+  bottom: 20%;
+  left: 50%;
+  translate: -50% 0;
+
+  color: var(--power-color);
+
+  font-size: 42px;
+  font-weight: bold;
+
+  pointer-events: none;
+}
+
+.power-disabled {
+  color: var(--power-color-disabled);
+}

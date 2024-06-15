@@ -9,7 +9,7 @@ type TSize = "small" | "big";
 
 export function calculateElementShadow(
   element: HTMLElement,
-  procents: [number, number],
+  procents: Velocity,
   size?: TSize
 ) {
   const [procentX, procentY] = procents;
