@@ -29,7 +29,6 @@ function CourseGround({ size, children }: CourseGround) {
       }`}
     >
       <BoxCollider />
-      {children}
       <div className="course-flag">
         <span
           ref={finishFlagRef}
@@ -40,6 +39,7 @@ function CourseGround({ size, children }: CourseGround) {
         </span>
         <Stars className={`stars ${isBallInHole && "stars-visible"}`} />
       </div>
+      {children}
     </div>
   );
 }

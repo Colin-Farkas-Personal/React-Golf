@@ -1,7 +1,4 @@
-import {
-  isCircleInCircleReturn,
-  isCircleInPolygonReturn,
-} from "../helpers/collisionType";
+import { isCircleInPolygonReturn } from "../helpers/collisionType";
 import { Line } from "../helpers/line";
 import { handleCollisionReturn } from "./collisionHandler";
 
@@ -49,6 +46,8 @@ export function handleCollisionResponse(
     isInHole: false,
   } as handleCollisionResponseReturn;
 
+  console.log("object", objectRef);
+
   // LINE COLLISION (END & LINE)
   if (objectRef.effect === "BOUNCE") {
     const lineDetails = details as isCircleInPolygonReturn;
@@ -75,6 +74,11 @@ export function handleCollisionResponse(
 
   if (objectRef.effect === "SLOW") {
     return { ...resultResponse, velocity: sandEffect(velocity) };
+  }
+
+  if (objectRef.effect === "RESTART") {
+    // Reload Page
+    location.reload();
   }
 
   return resultResponse;

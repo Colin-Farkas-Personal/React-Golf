@@ -1,0 +1,10 @@
+:root {
+  --water-trap-color-bg: #206cc7;
+}
+
+.water-trap {
+  position: absolute;
+  translate: -50% -50%;
+  background-color: var(--water-trap-color-bg);
+  border-radius: 1rem;
+}
