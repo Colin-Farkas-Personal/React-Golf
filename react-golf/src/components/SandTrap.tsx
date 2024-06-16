@@ -1,24 +1,26 @@
-import "../styles/stone.scss";
+import { useEffect, useRef } from "react";
 import BoxCollider from "./BoxCollider";
 import { useGameObjectsContext } from "../contexts/GameObjectsContext";
-import { useEffect, useRef } from "react";
+import "../styles/sand-trap.scss";
 
-interface StoneProps {
+interface SandTrapProps {
   x: number;
   y: number;
   size: number;
   rotate?: number;
 }
-
-function Stone({ x, y, size, rotate }: StoneProps) {
-  const stoneRef = useRef(null);
+function SandTrap({ x, y, size, rotate }: SandTrapProps) {
+  const sandTrapRef = useRef(null);
   const { addObject } = useGameObjectsContext();
-
   useEffect(() => {
-    addObject("STONE", stoneRef);
+    addObject("SAND_TRAP", sandTrapRef);
+
+    return () => {
+      // remove Object
+    };
   }, []);
 
-  const stoneStyle = {
+  const sandTrapStyle = {
     left: x + "%",
     top: y + "%",
     width: size,
@@ -27,10 +29,10 @@ function Stone({ x, y, size, rotate }: StoneProps) {
   };
 
   return (
-    <div ref={stoneRef} className="stone" style={stoneStyle}>
+    <div ref={sandTrapRef} className="sand-trap" style={sandTrapStyle}>
       <BoxCollider />
     </div>
   );
 }
 
-export default Stone;
+export default SandTrap;

@@ -160,7 +160,6 @@ export function isCircleInPolygon(
 
       // COLLISION WITH LINE
       if (collision.line || collision.end) {
-        console.log("Line Collision");
         lineCollision = collision;
         currentLine = line;
       }
@@ -180,10 +179,51 @@ export function isCircleInPolygon(
       }
     }
 
-    console.log("Center Collision");
     centerCollision = true;
   }
 
   // otherwise, after all that, return false
   return { lineCollision, centerCollision, currentLine };
+}
+
+// CIRCLE/CIRCLE
+export interface isCircleInCircleReturn {
+  border: boolean;
+  inside: boolean;
+}
+export function isCircleInCircle(
+  circle1: Circle,
+  circle2: Circle
+): isCircleInCircleReturn {
+  let resultCollision = { border: false, inside: false };
+
+  // Circle 1
+  const circle1X = circle1.point.x;
+  const circle1Y = circle1.point.y;
+  const circle1Radius = circle1.radius;
+
+  // Circle 2
+  const circle2X = circle2.point.x;
+  const circle2Y = circle2.point.y;
+  const circle2Radius = circle2.radius;
+
+  // get distance between the circle's centers
+  // use the Pythagorean Theorem to compute the distance
+  const distanceX = circle1X - circle2X;
+  const distanceY = circle1Y - circle2Y;
+  const distance = Math.sqrt(distanceX * distanceX + distanceY * distanceY);
+
+  // if the distance is less than the sum of the circle's
+  // radii, the circles are touching!
+  if (distance <= circle1Radius + circle2Radius) {
+    // TODO: Uncomment if circle-border-collision is needed in the future
+    //resultCollision = { border: true, inside: false };
+  }
+
+  // Check if circle1 is fully inside circle2
+  if (distance <= Math.abs(circle2Radius - circle1Radius)) {
+    resultCollision = { border: false, inside: true };
+  }
+
+  return resultCollision;
 }

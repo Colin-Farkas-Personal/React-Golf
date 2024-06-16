@@ -7,7 +7,7 @@ let velocityX = 0;
 let velocityY = 0;
 
 const MAX_SPEED = 20;
-const DECELERATION = 12;
+const DECELERATION = 0.01;
 
 export async function movePlayerBall(
   direction: Velocity,
@@ -19,10 +19,9 @@ export async function movePlayerBall(
   ballVelocity: (value: Velocity) => void
 ) {
   const [dirX, dirY] = direction;
-  const decelerationValue = DECELERATION / 1000;
 
-  const newVelocityX = (dirX * speed - velocityX) * decelerationValue;
-  const newVelocityY = (dirY * speed - velocityY) * decelerationValue;
+  const newVelocityX = (dirX * speed - velocityX) * DECELERATION;
+  const newVelocityY = (dirY * speed - velocityY) * DECELERATION;
   velocityX += newVelocityX;
   velocityY += newVelocityY;
 

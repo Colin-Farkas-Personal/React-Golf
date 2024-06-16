@@ -1,26 +1,38 @@
-import React, { RefObject, createContext, createRef } from "react";
+import React, { RefObject, createContext, useRef } from "react";
 
+// EFFECTS AND OBJECTS LIST
 export type Effect = "BOUNCE" | "SLOW" | "FINNISH";
-export interface RefInfo {
-  refObject: RefObject<HTMLElement>;
-  effect: Effect;
-  hasInside: boolean;
-}
-export interface GameObjectsContext {
-  objects: Record<RefName, RefInfo>;
-}
-// COMPONENT LIST
-const refNames = ["courseGround", "stone", "finishFlag"] as const;
+const refNames = [
+  "COURSE_GROUND",
+  "STONE",
+  "FINISH_FLAG",
+  "SAND_TRAP",
+] as const;
 export type RefName = (typeof refNames)[number];
 
 // Context Default Values
-const defaultValues: Record<RefName, RefInfo> = {
-  courseGround: { refObject: createRef(), effect: "BOUNCE", hasInside: false },
-  stone: { refObject: createRef(), effect: "BOUNCE", hasInside: false },
-  finishFlag: { refObject: createRef(), effect: "FINNISH", hasInside: true },
+const DEFAULT_VALUES: Record<RefName, any> = {
+  COURSE_GROUND: { effect: "BOUNCE" },
+  STONE: { effect: "BOUNCE" },
+  FINISH_FLAG: { effect: "FINNISH", isCircle: true },
+  SAND_TRAP: { effect: "SLOW", hasInside: true },
 };
+
+export interface GameObject {
+  name: RefName;
+  refObject: RefObject<HTMLElement>;
+  effect: Effect;
+  hasInside: boolean;
+  isCircle: boolean;
+}
+export interface GameObjectsContext {
+  objects: GameObject[];
+  addObject: (name: RefName, refObject: RefObject<HTMLElement>) => void;
+}
+
 const defaultComponentRefsContext: GameObjectsContext = {
-  objects: defaultValues,
+  objects: [],
+  addObject: () => {},
 };
 
 export const GameObjectsContext = createContext<GameObjectsContext>(
@@ -34,9 +46,22 @@ interface ComponentRefsProviderProps {
 export const GameObjectsProvider = ({
   children,
 }: ComponentRefsProviderProps) => {
+  const refArray = useRef<GameObject[]>([]);
+
+  function handleAddObject(name: RefName, refObject: RefObject<HTMLElement>) {
+    refArray.current.push({
+      name: name,
+      refObject: refObject,
+      ...DEFAULT_VALUES[name],
+    });
+  }
+
   return (
     <GameObjectsContext.Provider
-      value={{ objects: defaultComponentRefsContext.objects }}
+      value={{
+        objects: refArray.current,
+        addObject: handleAddObject,
+      }}
     >
       {children}
     </GameObjectsContext.Provider>

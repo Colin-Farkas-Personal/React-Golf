@@ -1,9 +1,15 @@
+import {
+  isCircleInCircleReturn,
+  isCircleInPolygonReturn,
+} from "../helpers/collisionType";
 import { Line } from "../helpers/line";
 import { handleCollisionReturn } from "./collisionHandler";
 
+// INVERSE REFLECTION
 function getReflectInverse(velocity: Velocity): Velocity {
   return [-velocity[0], -velocity[1]];
 }
+
 function getNormalVector(line: Line) {
   const lineVector = { x: line.b.x - line.a.x, y: line.b.y - line.a.y };
   const normalVector = { x: -lineVector.y, y: lineVector.x };
@@ -17,6 +23,7 @@ function getDotProduct(vectorA: Point, vectorB: Point) {
   return vectorA.x * vectorB.x + vectorA.y * vectorB.y;
 }
 
+// ANGLED REFLECTION
 function getReflectionVelocity(velocity: Velocity, normal: Point) {
   const velocityPoint = { x: velocity[0], y: velocity[1] };
   const dotProduct = 2 * getDotProduct(velocityPoint, normal);
@@ -42,18 +49,21 @@ export function handleCollisionResponse(
     isInHole: false,
   } as handleCollisionResponseReturn;
 
-  // POINT/LINE-END COLLISION
-  if (!objectRef.hasInside) {
-    if (details.lineCollision.end) {
+  // LINE COLLISION (END & LINE)
+  if (objectRef.effect === "BOUNCE") {
+    const lineDetails = details as isCircleInPolygonReturn;
+
+    // END
+    if (lineDetails.lineCollision.end) {
       resultResponse = {
         ...resultResponse,
         velocity: getReflectInverse(velocity),
       };
     }
 
-    // LINE COLLISION
-    if (details.lineCollision.line && details.currentLine) {
-      const normal = getNormalVector(details.currentLine);
+    // LINE
+    if (lineDetails.lineCollision.line && lineDetails.currentLine) {
+      const normal = getNormalVector(lineDetails.currentLine);
       const reflectionVelocity = getReflectionVelocity(velocity, normal);
       return { ...resultResponse, velocity: reflectionVelocity };
     }
@@ -63,5 +73,20 @@ export function handleCollisionResponse(
     return { ...resultResponse, isInHole: true };
   }
 
+  if (objectRef.effect === "SLOW") {
+    return { ...resultResponse, velocity: sandEffect(velocity) };
+  }
+
   return resultResponse;
+}
+
+// How much the ball should slow down.
+// Value: 0-1
+// A lower value means the player comes to stop faster.
+const SAND_DECREASE_VALUE = 0.95;
+function sandEffect(currentVelocity: Velocity): Velocity {
+  const decreasedX = currentVelocity[0] * SAND_DECREASE_VALUE;
+  const decreasedY = currentVelocity[1] * SAND_DECREASE_VALUE;
+  const decreasedVelocity = [decreasedX, decreasedY] as Velocity;
+  return decreasedVelocity;
 }

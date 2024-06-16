@@ -8,6 +8,7 @@ import { PlayerBallProvider } from "../contexts/PlayerBallContext";
 import Stone from "./Stone";
 import Power from "./Power";
 import { GameObjectsProvider } from "../contexts/GameObjectsContext";
+import SandTrap from "./SandTrap";
 
 function App() {
   const [powerProcent, setPowerProcent] = useState(0);
@@ -27,8 +28,9 @@ function App() {
           >
             {/* <MouseOutline /> */}
             <CourseGround size="small">
-              <Stone x={50} y={50} rotate={-50} size={80} />
               <PlayerBall startingPositionX={10} />
+              <SandTrap x={70} y={50} rotate={45} size={100} />
+              <Stone x={50} y={50} rotate={45} size={50} />
             </CourseGround>
             <Power power={powerProcent} />
           </ScreenViewBox>

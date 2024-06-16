@@ -12,12 +12,6 @@ export function useBallMovement(ballSpeed: number) {
 
   const movePlayer = useCallback(
     (mousePositionCurrentValue: Velocity, powerProcentValue: number) => {
-      console.log(
-        "powerProcentValue",
-        powerProcentValue,
-        "mousePositionCurrentValue",
-        mousePositionCurrentValue
-      );
       if (!isBallMoving) {
         const direction = [
           -mousePositionCurrentValue[0],

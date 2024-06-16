@@ -1,0 +1,10 @@
+:root {
+  --sand-trap-color-bg: #f9f7d0;
+}
+
+.sand-trap {
+  position: absolute;
+  translate: -50% -50%;
+  background-color: var(--sand-trap-color-bg);
+  border-radius: 1rem;
+}

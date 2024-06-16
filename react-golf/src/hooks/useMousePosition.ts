@@ -23,7 +23,6 @@ export function useMousePosition(maxDistanceX: number, maxDistanceY: number) {
     const powerDistanceX = getPowerDistance(distanceMovedX, maxDistanceX);
     const powerDistanceY = getPowerDistance(distanceMovedY, maxDistanceY);
     const currentPositionClamped: Velocity = [powerDistanceX, powerDistanceY];
-    console.log("currentPositionClamped", currentPositionClamped);
 
     setMousePositionCurrentValue(currentPositionClamped);
   }

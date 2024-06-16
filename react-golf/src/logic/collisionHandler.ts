@@ -1,6 +1,8 @@
-import { GameObjectsContext, RefInfo } from "../contexts/GameObjectsContext";
+import { GameObject, GameObjectsContext } from "../contexts/GameObjectsContext";
 import { getCircle } from "../helpers/circle";
 import {
+  isCircleInCircle,
+  isCircleInCircleReturn,
   isCircleInPolygon,
   isCircleInPolygonReturn,
 } from "../helpers/collisionType";
@@ -8,23 +10,20 @@ import { getPoints } from "../helpers/point";
 
 // START OF LOGIC
 export interface handleCollisionReturn {
-  details: isCircleInPolygonReturn;
-  objectRef: RefInfo;
+  details: isCircleInPolygonReturn | isCircleInCircleReturn;
+  objectRef: GameObject;
 }
 export function handleCollision(
   player: HTMLElement,
   gameObjects: GameObjectsContext["objects"]
 ): handleCollisionReturn | null {
   const circleRect = player;
-  const gameObjectsLength = Object.keys(gameObjects).length;
 
-  for (let i = 0; i < gameObjectsLength; i++) {
-    const currentName = Object.keys(gameObjects)[
-      i
-    ] as keyof GameObjectsContext["objects"];
-    const objectRefInfo = gameObjects[currentName];
-    const objectRef = objectRefInfo.refObject.current;
-    const objectHasInside = objectRefInfo.hasInside;
+  for (let i = 0; i < gameObjects.length; i++) {
+    const currentObject = gameObjects[i];
+    const objectRef = currentObject.refObject.current;
+    const objectHasInside = currentObject.hasInside;
+    const objectIsCircle = currentObject.isCircle;
 
     if (!objectRef) {
       // NOTHING for this object
@@ -34,12 +33,13 @@ export function handleCollision(
     const collisionDetails = objectCollision(
       circleRect,
       objectRef,
-      objectHasInside
+      objectHasInside,
+      objectIsCircle
     );
     if (collisionDetails) {
       return {
         details: collisionDetails,
-        objectRef: objectRefInfo,
+        objectRef: currentObject,
       };
     }
   }
@@ -50,19 +50,32 @@ export function handleCollision(
 function objectCollision(
   playerRef: HTMLElement,
   objectRef: HTMLElement,
-  hasInside: boolean
+  hasInside: boolean,
+  isCircle: boolean
 ) {
-  // Create Circel and Line values
-  const circle = getCircle(playerRef);
-  const points = getPoints(objectRef);
+  if (isCircle) {
+    const playerCircle = getCircle(playerRef);
+    const objectCircle = getCircle(objectRef);
 
-  const collisionResult = isCircleInPolygon(points, circle, hasInside);
+    const circleCollisionResult = isCircleInCircle(playerCircle, objectCircle);
 
-  const isCenterCollision = collisionResult.centerCollision;
-  const isLineCollision = collisionResult.lineCollision;
+    if (circleCollisionResult.border || circleCollisionResult.inside) {
+      return circleCollisionResult;
+    }
+  }
 
-  if (isCenterCollision || isLineCollision.end || isLineCollision.line) {
-    return collisionResult;
+  if (!isCircle) {
+    const circle = getCircle(playerRef);
+    const points = getPoints(objectRef);
+
+    const polygonCollisionResult = isCircleInPolygon(points, circle, hasInside);
+
+    const isCenterCollision = polygonCollisionResult.centerCollision;
+    const isLineCollision = polygonCollisionResult.lineCollision;
+
+    if (isCenterCollision || isLineCollision.end || isLineCollision.line) {
+      return polygonCollisionResult;
+    }
   }
 
   return null;
