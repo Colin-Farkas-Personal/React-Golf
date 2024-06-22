@@ -12,12 +12,6 @@ import { GameObjectsProvider } from "../contexts/GameObjectsContext";
 function App() {
   const [powerProcent, setPowerProcent] = useState(0);
 
-  // let titleText =
-  //   "<outline>Hold down</outline> the mouse button and <outline>move the mouse</outline> to tilt the course";
-  // if (isHeldDown) {
-  //   titleText = "<outline>Move the mouse</outline> to tilt the course";
-  // }
-
   return (
     <GameStateProvider>
       <GameObjectsProvider>

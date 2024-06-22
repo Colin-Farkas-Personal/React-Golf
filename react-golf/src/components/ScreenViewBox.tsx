@@ -1,4 +1,4 @@
-import React, { ReactNode, useEffect, useRef } from "react";
+import React, { ReactNode, useEffect } from "react";
 import "../styles/screen-view-box.scss";
 import { useMouseDrag } from "../hooks/useMouseDrag";
 
