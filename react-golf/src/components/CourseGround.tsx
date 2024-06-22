@@ -2,8 +2,8 @@ import "../styles/course-ground.scss";
 import Stars from "../assets/stars.svg?react";
 import { useGameContext } from "../contexts/GameStateContext";
 import BoxCollider from "./BoxCollider";
-import { useGameObjectsContext } from "../contexts/GameObjectsContext";
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
+import { useAddGameObject } from "../hooks/useAddGameObject";
 
 interface CourseGround {
   size: "small" | "medium" | "big";
@@ -13,13 +13,9 @@ interface CourseGround {
 function CourseGround({ size, children }: CourseGround) {
   const { isBallInHole } = useGameContext();
   const courseGroundRef = useRef(null);
+  useAddGameObject("COURSE_GROUND", courseGroundRef);
   const finishFlagRef = useRef(null);
-  const { addObject } = useGameObjectsContext();
-
-  useEffect(() => {
-    addObject("COURSE_GROUND", courseGroundRef);
-    addObject("FINISH_FLAG", finishFlagRef);
-  }, []);
+  useAddGameObject("FINISH_FLAG", finishFlagRef);
 
   return (
     <div

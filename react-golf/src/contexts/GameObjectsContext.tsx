@@ -1,4 +1,4 @@
-import React, { RefObject, createContext, useEffect, useRef } from "react";
+import React, { RefObject, createContext, useRef } from "react";
 
 // EFFECTS AND OBJECTS LIST
 export type Effect = "BOUNCE" | "SLOW" | "FINNISH" | "RESTART";
@@ -51,11 +51,16 @@ export const GameObjectsProvider = ({
   const refArray = useRef<GameObject[]>([]);
 
   function handleAddObject(name: RefName, refObject: RefObject<HTMLElement>) {
-    refArray.current.push({
-      name: name,
-      refObject: refObject,
-      ...DEFAULT_VALUES[name],
-    });
+    const hasExistingObject = refArray.current.some(
+      (object) => object.name === name
+    );
+    if (!hasExistingObject) {
+      refArray.current.push({
+        name: name,
+        refObject: refObject,
+        ...DEFAULT_VALUES[name],
+      });
+    }
   }
 
   return (

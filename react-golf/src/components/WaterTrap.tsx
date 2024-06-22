@@ -1,7 +1,7 @@
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
 import BoxCollider from "./BoxCollider";
-import { useGameObjectsContext } from "../contexts/GameObjectsContext";
 import "../styles/water-trap.scss";
+import { useAddGameObject } from "../hooks/useAddGameObject";
 
 interface SandTrapProps {
   x: number;
@@ -11,14 +11,7 @@ interface SandTrapProps {
 }
 function WaterTrap({ x, y, size, rotate }: SandTrapProps) {
   const waterTrapRef = useRef(null);
-  const { addObject } = useGameObjectsContext();
-  useEffect(() => {
-    addObject("WATER_TRAP", waterTrapRef);
-
-    return () => {
-      // remove Object
-    };
-  }, []);
+  useAddGameObject("WATER_TRAP", waterTrapRef);
 
   const waterTrapStyle = {
     left: x + "%",

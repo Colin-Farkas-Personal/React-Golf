@@ -28,18 +28,22 @@ export async function movePlayerBall(
   normalizeVelocity();
 
   // Add collision detection here
-  const collisionResult = handleCollision(player, gameObjects);
-  if (collisionResult) {
-    const collisionResponseResult = handleCollisionResponse(collisionResult, [
-      velocityX,
-      velocityY,
-    ]);
-    velocityX = collisionResponseResult.velocity[0];
-    velocityY = collisionResponseResult.velocity[1];
+  const collisionResults = handleCollision(player, gameObjects);
+  if (collisionResults) {
+    collisionResults.forEach((result) => {
+      const collisionResponseResult = handleCollisionResponse(result, [
+        velocityX,
+        velocityY,
+      ]);
 
-    if (collisionResponseResult.isInHole) {
-      setIsBallInHole(collisionResponseResult.isInHole);
-    }
+      // Set the velocity to the collision response velocity
+      velocityX = collisionResponseResult.velocity[0];
+      velocityY = collisionResponseResult.velocity[1];
+
+      if (collisionResponseResult.isInHole) {
+        setIsBallInHole(collisionResponseResult.isInHole);
+      }
+    });
   }
 
   ballVelocity([velocityX, velocityY]);
@@ -62,7 +66,6 @@ export async function movePlayerBall(
     });
   }
 }
-
 function normalizeVelocity() {
   const currentSpeed = Math.hypot(velocityX, velocityY);
   if (currentSpeed > MAX_SPEED) {

@@ -1,7 +1,7 @@
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
 import BoxCollider from "./BoxCollider";
-import { useGameObjectsContext } from "../contexts/GameObjectsContext";
 import "../styles/sand-trap.scss";
+import { useAddGameObject } from "../hooks/useAddGameObject";
 
 interface SandTrapProps {
   x: number;
@@ -11,14 +11,7 @@ interface SandTrapProps {
 }
 function SandTrap({ x, y, size, rotate }: SandTrapProps) {
   const sandTrapRef = useRef(null);
-  const { addObject } = useGameObjectsContext();
-  useEffect(() => {
-    addObject("SAND_TRAP", sandTrapRef);
-
-    return () => {
-      // remove Object
-    };
-  }, []);
+  useAddGameObject("SAND_TRAP", sandTrapRef);
 
   const sandTrapStyle = {
     left: x + "%",

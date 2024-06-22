@@ -1,7 +1,7 @@
 import "../styles/stone.scss";
 import BoxCollider from "./BoxCollider";
-import { useGameObjectsContext } from "../contexts/GameObjectsContext";
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
+import { useAddGameObject } from "../hooks/useAddGameObject";
 
 interface StoneProps {
   x: number;
@@ -12,11 +12,7 @@ interface StoneProps {
 
 function Stone({ x, y, size, rotate }: StoneProps) {
   const stoneRef = useRef(null);
-  const { addObject } = useGameObjectsContext();
-
-  useEffect(() => {
-    addObject("STONE", stoneRef);
-  }, []);
+  useAddGameObject("STONE", stoneRef);
 
   const stoneStyle = {
     left: x + "%",

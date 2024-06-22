@@ -16,8 +16,10 @@ export interface handleCollisionReturn {
 export function handleCollision(
   player: HTMLElement,
   gameObjects: GameObjectsContext["objects"]
-): handleCollisionReturn | null {
+): handleCollisionReturn[] | null {
   const circleRect = player;
+
+  let detectedCollisions = [];
 
   for (let i = 0; i < gameObjects.length; i++) {
     const currentObject = gameObjects[i];
@@ -26,7 +28,6 @@ export function handleCollision(
     const objectIsCircle = currentObject.isCircle;
 
     if (!objectRef) {
-      // NOTHING for this object
       continue;
     }
 
@@ -37,14 +38,14 @@ export function handleCollision(
       objectIsCircle
     );
     if (collisionDetails) {
-      return {
+      detectedCollisions.push({
         details: collisionDetails,
         objectRef: currentObject,
-      };
+      });
     }
   }
 
-  return null;
+  return detectedCollisions.length > 0 ? detectedCollisions : null;
 }
 
 function objectCollision(
