@@ -1,0 +1,37 @@
+:root {
+  --mound-outer-color-bg-radial-graidnet: radial-gradient(#3cffcf, #54edc7);
+  --mound-line-color-bg: #3bc2a0;
+}
+
+.mound-outer {
+  z-index: 1;
+  position: absolute;
+  translate: -50% -50%;
+
+  background: white;
+  background: var(--mound-outer-color-bg-radial-graidnet);
+  border-radius: 50%;
+
+  &::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    translate: -50% -50%;
+    width: 50%;
+    height: 50%;
+    border-radius: inherit;
+    border: 0.25rem solid var(--mound-line-color-bg);
+  }
+}
+
+.mound-inner {
+  z-index: 2;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  translate: -50% -50%;
+
+  max-height: 50%;
+  max-width: 50%;
+}
