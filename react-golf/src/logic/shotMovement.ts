@@ -6,7 +6,7 @@ export let requestAnimationFrameId: number;
 let velocityX = 0;
 let velocityY = 0;
 
-const MAX_SPEED = 20;
+export const MAX_SPEED = 20;
 const DECELERATION = 0.01;
 
 export async function movePlayerBall(
@@ -25,16 +25,17 @@ export async function movePlayerBall(
   velocityX += newVelocityX;
   velocityY += newVelocityY;
 
-  normalizeVelocity();
-
   // Add collision detection here
   const collisionResults = handleCollision(player, gameObjects);
   if (collisionResults) {
+    const playerRect = player.getBoundingClientRect();
+
     collisionResults.forEach((result) => {
-      const collisionResponseResult = handleCollisionResponse(result, [
-        velocityX,
-        velocityY,
-      ]);
+      const collisionResponseResult = handleCollisionResponse(
+        result,
+        [velocityX, velocityY],
+        playerRect
+      );
 
       // Set the velocity to the collision response velocity
       velocityX = collisionResponseResult.velocity[0];
@@ -46,6 +47,7 @@ export async function movePlayerBall(
     });
   }
 
+  normalizeVelocity();
   ballVelocity([velocityX, velocityY]);
 
   const isStill = await isBallStill();

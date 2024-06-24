@@ -3,12 +3,7 @@ import BoxCollider from "./BoxCollider";
 import "../styles/water-trap.scss";
 import { useAddGameObject } from "../hooks/useAddGameObject";
 
-interface SandTrapProps {
-  x: number;
-  y: number;
-  size: number;
-  rotate?: number;
-}
+interface SandTrapProps extends GameObject {}
 function WaterTrap({ x, y, size, rotate }: SandTrapProps) {
   const waterTrapRef = useRef(null);
   useAddGameObject("WATER_TRAP", waterTrapRef);

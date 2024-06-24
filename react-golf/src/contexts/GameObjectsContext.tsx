@@ -1,13 +1,21 @@
 import React, { RefObject, createContext, useRef } from "react";
 
 // EFFECTS AND OBJECTS LIST
-export type Effect = "BOUNCE" | "SLOW" | "FINNISH" | "RESTART";
+export type Effect =
+  | "BOUNCE"
+  | "SLOW"
+  | "FINNISH"
+  | "RESTART"
+  | "PULLED"
+  | "PUSHED";
 const refNames = [
   "COURSE_GROUND",
   "STONE",
   "FINISH_FLAG",
   "SAND_TRAP",
   "WATER_TRAP",
+  "PIT",
+  "MOUND",
 ] as const;
 export type RefName = (typeof refNames)[number];
 
@@ -18,6 +26,8 @@ const DEFAULT_VALUES: Record<RefName, any> = {
   FINISH_FLAG: { effect: "FINNISH", isCircle: true },
   SAND_TRAP: { effect: "SLOW", hasInside: true },
   WATER_TRAP: { effect: "RESTART", hasInside: true },
+  PIT: { effect: "PULLED", isCircle: true },
+  MOUND: { effect: "PUSHED", isCircle: true },
 };
 
 export interface GameObject {

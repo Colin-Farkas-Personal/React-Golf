@@ -3,14 +3,8 @@ import BoxCollider from "./BoxCollider";
 import { useRef } from "react";
 import { useAddGameObject } from "../hooks/useAddGameObject";
 
-interface StoneProps {
-  x: number;
-  y: number;
-  size: number;
-  rotate?: number;
-}
-
-function Stone({ x, y, size, rotate }: StoneProps) {
+interface StoneProps extends GameObject {}
+function Stone({ x = 50, y, size = 50, rotate }: StoneProps) {
   const stoneRef = useRef(null);
   useAddGameObject("STONE", stoneRef);
 

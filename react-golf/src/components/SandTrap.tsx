@@ -3,12 +3,7 @@ import BoxCollider from "./BoxCollider";
 import "../styles/sand-trap.scss";
 import { useAddGameObject } from "../hooks/useAddGameObject";
 
-interface SandTrapProps {
-  x: number;
-  y: number;
-  size: number;
-  rotate?: number;
-}
+interface SandTrapProps extends GameObject {}
 function SandTrap({ x, y, size, rotate }: SandTrapProps) {
   const sandTrapRef = useRef(null);
   useAddGameObject("SAND_TRAP", sandTrapRef);

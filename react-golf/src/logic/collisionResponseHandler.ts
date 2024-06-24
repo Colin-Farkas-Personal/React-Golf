@@ -38,7 +38,8 @@ interface handleCollisionResponseReturn {
 }
 export function handleCollisionResponse(
   collisionResult: handleCollisionReturn,
-  velocity: Velocity
+  velocity: Velocity,
+  playerRect: DOMRect
 ): handleCollisionResponseReturn {
   const { details, objectRef } = collisionResult;
 
@@ -80,6 +81,37 @@ export function handleCollisionResponse(
     return { ...resultResponse, velocity: finishEffect(velocity) };
   }
 
+  if (objectRef.effect === "PULLED") {
+    // Pulled towards middle
+    const objectRect =
+      collisionResult.objectRef.refObject.current?.getBoundingClientRect();
+
+    if (!objectRect || !playerRect) {
+      return { ...resultResponse, velocity };
+    }
+
+    const pulledWidth = objectRect?.width / 2;
+    const pulledHeight = objectRect?.height / 2;
+
+    const playerWidth = playerRect.width / 2;
+    const playerHeight = playerRect.height / 2;
+
+    const objectCenterPoint = {
+      x: Number(objectRect?.left + pulledWidth),
+      y: Number(objectRect?.top + pulledHeight),
+    } as Point;
+
+    const playerCenterPoint = {
+      x: Number(playerRect?.left + playerWidth),
+      y: Number(playerRect?.top + playerHeight),
+    } as Point;
+
+    return {
+      ...resultResponse,
+      velocity: pullEffect(velocity, playerCenterPoint, objectCenterPoint),
+    };
+  }
+
   return resultResponse;
 }
 
@@ -94,14 +126,65 @@ function sandEffect(currentVelocity: Velocity): Velocity {
   return decreasedVelocity;
 }
 
-function finishEffect(velocity: Velocity) {
-  const velocityX = velocity[0];
-  const velocityY = velocity[1];
+function finishEffect(currentVelocity: Velocity) {
+  const velocityX = currentVelocity[0];
+  const velocityY = currentVelocity[1];
+
+  console.log("WATER");
 
   if (isStill(velocityX, velocityY)) {
     location.reload();
-    console.log("SLOW");
   }
 
-  return velocity;
+  return currentVelocity;
+}
+
+// How much the ball should increase in speed.
+// Value: 1-inifinity
+// A higher value means the ball moves faster towards the center point.
+
+// X
+// 1. FORWARD ->
+//
+
+const PULL_STRENGTH = 0.1; // Adjust this value as needed
+
+const VELOCITY_THRESHOLD = 0.01; // Adjust this value as needed
+
+function pullEffect(
+  currentVelocity: [number, number],
+  playerCenterPoint: { x: number; y: number },
+  centerPoint: { x: number; y: number }
+): [number, number] {
+  // Calculate the vector from the player to the center of the pit
+  let dx = centerPoint.x - playerCenterPoint.x;
+  let dy = centerPoint.y - playerCenterPoint.y;
+
+  // Calculate the distance
+  let distance = Math.sqrt(dx * dx + dy * dy);
+
+  // Only normalize and scale the vector if the distance is not zero
+  if (distance !== 0) {
+    // Normalize the vector
+    dx /= distance;
+    dy /= distance;
+
+    // Scale the vector by the pull strength
+    dx *= PULL_STRENGTH;
+    dy *= PULL_STRENGTH;
+  }
+
+  // Subtract the pull vector from the current velocity to get the new velocity
+  let newVelocityX = currentVelocity[0] + dx;
+  let newVelocityY = currentVelocity[1] + dy;
+
+  // If the velocity is below the threshold, set it to zero
+  if (Math.abs(newVelocityX) < VELOCITY_THRESHOLD) {
+    newVelocityX = 0;
+  }
+  if (Math.abs(newVelocityY) < VELOCITY_THRESHOLD) {
+    newVelocityY = 0;
+  }
+
+  return [newVelocityX, newVelocityY];
 }
