@@ -1,4 +1,5 @@
 import { GameObjectsContext } from "../contexts/GameObjectsContext";
+import { isStill } from "../helpers/isStill";
 import { handleCollision } from "./collisionHandler";
 import { handleCollisionResponse } from "./collisionResponseHandler";
 
@@ -85,10 +86,31 @@ function formatDecimals(number: number, decimals: number) {
   return Number(formatted);
 }
 
+const TIME_TO_RESET = 1000;
+let startTime = 0,
+  elapsedTime = 0;
 function isBallStill(): Promise<boolean> {
   return new Promise((resolve) => {
-    resolve(
-      formatDecimals(velocityX, 1) === 0 && formatDecimals(velocityY, 1) === 0
-    );
+    if (isStill(velocityX, velocityY)) {
+      if (!startTime) {
+        startTime = performance.now();
+      }
+
+      elapsedTime = performance.now();
+
+      var timeDifference = Math.trunc(elapsedTime - startTime);
+
+      if (timeDifference >= TIME_TO_RESET) {
+        startTime = 0;
+        elapsedTime = 0;
+        resolve(true);
+      }
+
+      resolve(false);
+    } else {
+      startTime = 0;
+      elapsedTime = 0;
+      resolve(false);
+    }
   });
 }

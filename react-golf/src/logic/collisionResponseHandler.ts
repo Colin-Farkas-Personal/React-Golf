@@ -1,5 +1,5 @@
 import { isCircleInPolygonReturn } from "../helpers/collisionType";
-import { isStill } from "../helpers/isStill";
+import { isPartiallyStill, isStill } from "../helpers/isStill";
 import { Line } from "../helpers/line";
 import { handleCollisionReturn } from "./collisionHandler";
 
@@ -148,20 +148,26 @@ function finishEffect(currentVelocity: Velocity) {
 //
 
 const PULL_STRENGTH = 0.1; // Adjust this value as needed
-
 const VELOCITY_THRESHOLD = 0.01; // Adjust this value as needed
+const STOP_DISTANCE = 0.05; // Adjust this value as needed
 
 function pullEffect(
   currentVelocity: [number, number],
   playerCenterPoint: { x: number; y: number },
   centerPoint: { x: number; y: number }
 ): [number, number] {
+  console.log("Velocities", currentVelocity);
   // Calculate the vector from the player to the center of the pit
   let dx = centerPoint.x - playerCenterPoint.x;
   let dy = centerPoint.y - playerCenterPoint.y;
 
   // Calculate the distance
   let distance = Math.sqrt(dx * dx + dy * dy);
+
+  // If the distance is less than or equal to the stop distance, set velocity to zero
+  if (distance <= STOP_DISTANCE) {
+    return [0, 0];
+  }
 
   // Only normalize and scale the vector if the distance is not zero
   if (distance !== 0) {
@@ -178,11 +184,12 @@ function pullEffect(
   let newVelocityX = currentVelocity[0] + dx;
   let newVelocityY = currentVelocity[1] + dy;
 
-  // If the velocity is below the threshold, set it to zero
-  if (Math.abs(newVelocityX) < VELOCITY_THRESHOLD) {
+  // If the velocity is below or at the threshold, set it to zero
+  if (
+    Math.abs(newVelocityX) <= VELOCITY_THRESHOLD &&
+    Math.abs(newVelocityY) <= VELOCITY_THRESHOLD
+  ) {
     newVelocityX = 0;
-  }
-  if (Math.abs(newVelocityY) < VELOCITY_THRESHOLD) {
     newVelocityY = 0;
   }
 

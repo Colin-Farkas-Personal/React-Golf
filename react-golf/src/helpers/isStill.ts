@@ -10,9 +10,13 @@ export function isStill(velocityX: number, velocityY: number) {
     velocityY >= VELOCITY_TRESHOLD_NEGATIBE &&
     velocityY <= VELOCITY_TRESHOLD_POSITIVE;
 
-  if (isStillX && isStillY) {
-    return true;
-  }
+  return isStillX && isStillY;
+}
 
-  return false;
+export function isPartiallyStill(velocityAxis: number) {
+  const isStill =
+    velocityAxis >= VELOCITY_TRESHOLD_NEGATIBE &&
+    velocityAxis <= VELOCITY_TRESHOLD_POSITIVE;
+
+  return isStill;
 }

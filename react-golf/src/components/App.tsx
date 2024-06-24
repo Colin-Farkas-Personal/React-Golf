@@ -24,9 +24,7 @@ function App() {
           >
             {/* <MouseOutline /> */}
             <CourseGround size="small">
-              <Pit x={40} y={50} size={180}>
-                <SandTrap rotate={45} size={40} />
-              </Pit>
+              <Pit x={40} y={50} size={180}></Pit>
               <PlayerBall startingPositionX={10} />
             </CourseGround>
             <Power power={powerProcent} />
