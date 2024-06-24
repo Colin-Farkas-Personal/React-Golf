@@ -3,6 +3,7 @@ import "../styles/finish-flag.scss";
 import Stars from "../assets/stars.svg?react";
 import { useAddGameObject } from "../hooks/useAddGameObject";
 import BoxCollider from "./BoxCollider";
+import { useGameContext } from "../contexts/GameStateContext";
 
 interface FinishFlagProps {
   x?: number;
@@ -11,6 +12,7 @@ interface FinishFlagProps {
 function FinishFlag({ x, y }: FinishFlagProps) {
   const finishFlagRef = useRef(null);
   useAddGameObject("FINISH_FLAG", finishFlagRef);
+  const { isBallInHole } = useGameContext();
 
   const finishFlagStyle = {
     left: x + "%",

@@ -156,7 +156,6 @@ function pullEffect(
   playerCenterPoint: { x: number; y: number },
   centerPoint: { x: number; y: number }
 ): [number, number] {
-  console.log("Velocities", currentVelocity);
   // Calculate the vector from the player to the center of the pit
   let dx = centerPoint.x - playerCenterPoint.x;
   let dy = centerPoint.y - playerCenterPoint.y;

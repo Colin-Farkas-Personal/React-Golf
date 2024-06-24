@@ -26,6 +26,9 @@ function App() {
             {/* <MouseOutline /> */}
             <CourseGround size="small">
               <Stone size={45} />
+              <Pit size={130} x={80} y={50}>
+                <FinishFlag />
+              </Pit>
               <Stone size={45} x={60} y={100} />
               <PlayerBall startingPositionX={10} />
             </CourseGround>
