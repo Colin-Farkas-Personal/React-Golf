@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useId } from "react";
 import { RefName, useGameObjectsContext } from "../contexts/GameObjectsContext";
 
 export function useAddGameObject(
@@ -6,8 +6,9 @@ export function useAddGameObject(
   ref: React.RefObject<HTMLElement>
 ) {
   const { addObject } = useGameObjectsContext();
+  const id = useId();
 
   useEffect(() => {
-    addObject(name, ref);
+    addObject(id, name, ref);
   }, []);
 }

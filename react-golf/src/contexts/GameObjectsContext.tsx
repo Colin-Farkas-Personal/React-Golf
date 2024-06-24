@@ -31,6 +31,7 @@ const DEFAULT_VALUES: Record<RefName, any> = {
 };
 
 export interface GameObject {
+  id: string;
   name: RefName;
   refObject: RefObject<HTMLElement>;
   effect: Effect;
@@ -39,7 +40,11 @@ export interface GameObject {
 }
 export interface GameObjectsContext {
   objects: GameObject[];
-  addObject: (name: RefName, refObject: RefObject<HTMLElement>) => void;
+  addObject: (
+    id: string,
+    name: RefName,
+    refObject: RefObject<HTMLElement>
+  ) => void;
 }
 
 const defaultComponentRefsContext: GameObjectsContext = {
@@ -60,12 +65,18 @@ export const GameObjectsProvider = ({
 }: ComponentRefsProviderProps) => {
   const refArray = useRef<GameObject[]>([]);
 
-  function handleAddObject(name: RefName, refObject: RefObject<HTMLElement>) {
+  function handleAddObject(
+    id: string,
+    name: RefName,
+    refObject: RefObject<HTMLElement>
+  ) {
     const hasExistingObject = refArray.current.some(
-      (object) => object.name === name
+      (object) => object.id === id
     );
+
     if (!hasExistingObject) {
       refArray.current.push({
+        id: id,
         name: name,
         refObject: refObject,
         ...DEFAULT_VALUES[name],
