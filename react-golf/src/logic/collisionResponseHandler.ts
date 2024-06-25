@@ -7,6 +7,13 @@ import { pushEffect } from "./effects/pushEffect";
 import { getCircle } from "../helpers/circle";
 import { reflectionEffect } from "./effects/reflectionEffect";
 
+function defaultCollisionResponse(
+  resultResponse: handleCollisionResponseReturn,
+  currentVelocity: Velocity
+) {
+  return { ...resultResponse, currentVelocity };
+}
+
 interface handleCollisionResponseReturn {
   velocity: Velocity;
   isInHole: boolean;
@@ -23,62 +30,64 @@ export function handleCollisionResponse(
     isInHole: false,
   } as handleCollisionResponseReturn;
 
-  // LINE COLLISION (END & LINE)
-  if (objectRef.effect === "BOUNCE") {
-    const lineDetails = details as isCircleInPolygonReturn;
+  switch (objectRef.effect) {
+    case "BOUNCE": {
+      const lineDetails = details as isCircleInPolygonReturn;
 
-    return {
-      ...resultResponse,
-      velocity: reflectionEffect(lineDetails, velocity),
-    };
-  }
-
-  if (objectRef.effect === "FINNISH") {
-    return { ...resultResponse, isInHole: true };
-  }
-
-  if (objectRef.effect === "SLOW") {
-    return { ...resultResponse, velocity: sandEffect(velocity) };
-  }
-
-  if (objectRef.effect === "RESTART") {
-    // Reload Page
-    return { ...resultResponse, velocity: finishEffect(velocity) };
-  }
-
-  if (objectRef.effect === "PULLED") {
-    // Pulled towards middle
-    const objectRect = collisionResult.objectRef.refObject.current;
-
-    if (!objectRect || !playerRect) {
-      return { ...resultResponse, velocity };
+      return {
+        ...resultResponse,
+        velocity: reflectionEffect(lineDetails, velocity),
+      };
     }
 
-    const objectCenterPoint = getCircle(objectRect).point;
-    const playerCenterPoint = getCircle(playerRect).point;
-
-    return {
-      ...resultResponse,
-      velocity: pullEffect(velocity, playerCenterPoint, objectCenterPoint),
-    };
-  }
-
-  if (objectRef.effect === "PUSHED") {
-    // Pulled towards middle
-    const objectRect = collisionResult.objectRef.refObject.current;
-
-    if (!objectRect || !playerRect) {
-      return { ...resultResponse, velocity };
+    case "FINNISH": {
+      return { ...resultResponse, isInHole: true };
     }
 
-    const objectCenterPoint = getCircle(objectRect).point;
-    const playerCenterPoint = getCircle(playerRect).point;
+    case "SLOW": {
+      return { ...resultResponse, velocity: sandEffect(velocity) };
+    }
 
-    return {
-      ...resultResponse,
-      velocity: pushEffect(velocity, playerCenterPoint, objectCenterPoint),
-    };
+    case "RESTART": {
+      // Reload Page
+      return { ...resultResponse, velocity: finishEffect(velocity) };
+    }
+
+    case "PULLED": {
+      // Pulled towards middle
+      const objectRect = collisionResult.objectRef.refObject.current;
+
+      if (!objectRect || !playerRect) {
+        return defaultCollisionResponse(resultResponse, velocity);
+      }
+
+      const objectCenterPoint = getCircle(objectRect).point;
+      const playerCenterPoint = getCircle(playerRect).point;
+
+      return {
+        ...resultResponse,
+        velocity: pullEffect(velocity, playerCenterPoint, objectCenterPoint),
+      };
+    }
+
+    case "PUSHED": {
+      // Pushed away from middle
+      const objectRect = collisionResult.objectRef.refObject.current;
+
+      if (!objectRect || !playerRect) {
+        return defaultCollisionResponse(resultResponse, velocity);
+      }
+
+      const objectCenterPoint = getCircle(objectRect).point;
+      const playerCenterPoint = getCircle(playerRect).point;
+
+      return {
+        ...resultResponse,
+        velocity: pushEffect(velocity, playerCenterPoint, objectCenterPoint),
+      };
+    }
+
+    default:
+      return defaultCollisionResponse(resultResponse, velocity);
   }
-
-  return resultResponse;
 }
