@@ -26,12 +26,14 @@ function App() {
           >
             {/* <MouseOutline /> */}
             <CourseGround size="small">
-              <Stone size={45} />
-              <Mound size={120} x={50} y={50}></Mound>
-              <Pit size={130} x={90} y={50}>
+              <Mound size={100} x={20} y={50}>
+                <SandTrap size={40} />
+              </Mound>
+              <Pit size={80} x={90} y={50}>
                 <FinishFlag />
               </Pit>
-              <Stone size={45} x={90} y={100} />
+              <SandTrap size={60} x={60} y={50} />
+
               <PlayerBall startingPositionX={10} />
             </CourseGround>
             <Power power={powerProcent} />

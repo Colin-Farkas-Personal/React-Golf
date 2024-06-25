@@ -1,7 +1,10 @@
 import { isCircleInPolygonReturn } from "../helpers/collisionType";
-import { isPartiallyStill, isStill } from "../helpers/isStill";
 import { Line } from "../helpers/line";
 import { handleCollisionReturn } from "./collisionHandler";
+import { sandEffect } from "./effects/sandEffect";
+import { finishEffect } from "./effects/finishEffect";
+import { pullEffect } from "./effects/pullEffect";
+import { pushEffect } from "./effects/pushEffect";
 
 // INVERSE REFLECTION
 function getReflectInverse(velocity: Velocity): Velocity {
@@ -144,131 +147,4 @@ export function handleCollisionResponse(
   }
 
   return resultResponse;
-}
-
-// How much the ball should slow down.
-// Value: 0-1
-// A lower value means the player comes to stop faster.
-const SAND_DECREASE_VALUE = 0.95;
-function sandEffect(currentVelocity: Velocity): Velocity {
-  const decreasedX = currentVelocity[0] * SAND_DECREASE_VALUE;
-  const decreasedY = currentVelocity[1] * SAND_DECREASE_VALUE;
-  const decreasedVelocity = [decreasedX, decreasedY] as Velocity;
-  return decreasedVelocity;
-}
-
-function finishEffect(currentVelocity: Velocity) {
-  const velocityX = currentVelocity[0];
-  const velocityY = currentVelocity[1];
-
-  console.log("WATER");
-
-  if (isStill(velocityX, velocityY)) {
-    location.reload();
-  }
-
-  return currentVelocity;
-}
-
-// How much the ball should increase in speed.
-// Value: 1-inifinity
-// A higher value means the ball moves faster towards the center point.
-
-// X
-// 1. FORWARD ->
-//
-
-const PULL_STRENGTH = 0.1; // Adjust this value as needed
-const VELOCITY_THRESHOLD = 0.01; // Adjust this value as needed
-const STOP_DISTANCE = 0.05; // Adjust this value as needed
-
-function pullEffect(
-  currentVelocity: [number, number],
-  playerCenterPoint: { x: number; y: number },
-  centerPoint: { x: number; y: number }
-): [number, number] {
-  // Calculate the vector from the player to the center of the pit
-  let dx = centerPoint.x - playerCenterPoint.x;
-  let dy = centerPoint.y - playerCenterPoint.y;
-
-  // Calculate the distance
-  let distance = Math.sqrt(dx * dx + dy * dy);
-
-  // If the distance is less than or equal to the stop distance, set velocity to zero
-  if (distance <= STOP_DISTANCE) {
-    return [0, 0];
-  }
-
-  // Only normalize and scale the vector if the distance is not zero
-  if (distance !== 0) {
-    // Normalize the vector
-    dx /= distance;
-    dy /= distance;
-
-    // Scale the vector by the pull strength
-    dx *= PULL_STRENGTH;
-    dy *= PULL_STRENGTH;
-  }
-
-  // Subtract the pull vector from the current velocity to get the new velocity
-  let newVelocityX = currentVelocity[0] + dx;
-  let newVelocityY = currentVelocity[1] + dy;
-
-  // If the velocity is below or at the threshold, set it to zero
-  if (
-    Math.abs(newVelocityX) <= VELOCITY_THRESHOLD &&
-    Math.abs(newVelocityY) <= VELOCITY_THRESHOLD
-  ) {
-    newVelocityX = 0;
-    newVelocityY = 0;
-  }
-
-  return [newVelocityX, newVelocityY];
-}
-
-const PUSH_STRENGTH = 0.05;
-const MOUND_TOP_DISTANCE = 20;
-function pushEffect(
-  currentVelocity: [number, number],
-  playerCenterPoint: { x: number; y: number },
-  centerPoint: { x: number; y: number }
-): [number, number] {
-  // Calculate the vector from the player to the center of the pit
-  let dx = centerPoint.x - playerCenterPoint.x;
-  let dy = centerPoint.y - playerCenterPoint.y;
-
-  // Calculate the distance
-  let distance = Math.sqrt(dx * dx + dy * dy);
-
-  // If the distance is less than or equal to the stop distance, set velocity to zero
-  console.log("Current distance: ", distance);
-  if (distance <= MOUND_TOP_DISTANCE) {
-    return currentVelocity;
-  }
-
-  // Only normalize and scale the vector if the distance is not zero
-  if (distance !== 0) {
-    // Normalize the vector
-    dx /= distance;
-    dy /= distance;
-
-    // Scale the vector by the pull strength
-    dx *= PUSH_STRENGTH;
-    dy *= PUSH_STRENGTH;
-  }
-
-  // Subtract the pull vector from the current velocity to get the new velocity
-  let newVelocityX = currentVelocity[0] - dx;
-  let newVelocityY = currentVelocity[1] - dy;
-
-  // If the velocity is below or at the threshold, set it to zero
-  if (
-    Math.abs(newVelocityX) <= VELOCITY_THRESHOLD &&
-    Math.abs(newVelocityY) <= VELOCITY_THRESHOLD
-  ) {
-    newVelocityX = 0;
-    newVelocityY = 0;
-  }
-
-  return [newVelocityX, newVelocityY];
 }
