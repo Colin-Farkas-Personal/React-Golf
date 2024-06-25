@@ -5,6 +5,7 @@ import { sandEffect } from "./effects/sandEffect";
 import { finishEffect } from "./effects/finishEffect";
 import { pullEffect } from "./effects/pullEffect";
 import { pushEffect } from "./effects/pushEffect";
+import { getCircle } from "../helpers/circle";
 
 // INVERSE REFLECTION
 function getReflectInverse(velocity: Velocity): Velocity {
@@ -42,7 +43,7 @@ interface handleCollisionResponseReturn {
 export function handleCollisionResponse(
   collisionResult: handleCollisionReturn,
   velocity: Velocity,
-  playerRect: DOMRect
+  playerRect: HTMLElement
 ): handleCollisionResponseReturn {
   const { details, objectRef } = collisionResult;
 
@@ -86,28 +87,14 @@ export function handleCollisionResponse(
 
   if (objectRef.effect === "PULLED") {
     // Pulled towards middle
-    const objectRect =
-      collisionResult.objectRef.refObject.current?.getBoundingClientRect();
+    const objectRect = collisionResult.objectRef.refObject.current;
 
     if (!objectRect || !playerRect) {
       return { ...resultResponse, velocity };
     }
 
-    const pulledWidth = objectRect?.width / 2;
-    const pulledHeight = objectRect?.height / 2;
-
-    const playerWidth = playerRect.width / 2;
-    const playerHeight = playerRect.height / 2;
-
-    const objectCenterPoint = {
-      x: Number(objectRect?.left + pulledWidth),
-      y: Number(objectRect?.top + pulledHeight),
-    } as Point;
-
-    const playerCenterPoint = {
-      x: Number(playerRect?.left + playerWidth),
-      y: Number(playerRect?.top + playerHeight),
-    } as Point;
+    const objectCenterPoint = getCircle(objectRect).point;
+    const playerCenterPoint = getCircle(playerRect).point;
 
     return {
       ...resultResponse,
@@ -117,28 +104,14 @@ export function handleCollisionResponse(
 
   if (objectRef.effect === "PUSHED") {
     // Pulled towards middle
-    const objectRect =
-      collisionResult.objectRef.refObject.current?.getBoundingClientRect();
+    const objectRect = collisionResult.objectRef.refObject.current;
 
     if (!objectRect || !playerRect) {
       return { ...resultResponse, velocity };
     }
 
-    const pulledWidth = objectRect?.width / 2;
-    const pulledHeight = objectRect?.height / 2;
-
-    const playerWidth = playerRect.width / 2;
-    const playerHeight = playerRect.height / 2;
-
-    const objectCenterPoint = {
-      x: Number(objectRect?.left + pulledWidth),
-      y: Number(objectRect?.top + pulledHeight),
-    } as Point;
-
-    const playerCenterPoint = {
-      x: Number(playerRect?.left + playerWidth),
-      y: Number(playerRect?.top + playerHeight),
-    } as Point;
+    const objectCenterPoint = getCircle(objectRect).point;
+    const playerCenterPoint = getCircle(playerRect).point;
 
     return {
       ...resultResponse,

@@ -5,12 +5,10 @@ import ScreenViewBox from "./ScreenViewBox";
 import { GameStateProvider } from "../contexts/GameStateContext";
 import { useState } from "react";
 import { PlayerBallProvider } from "../contexts/PlayerBallContext";
-import Stone from "./Stone";
 import Power from "./Power";
 import { GameObjectsProvider } from "../contexts/GameObjectsContext";
 import Pit from "./Pit";
 import SandTrap from "./SandTrap";
-import WaterTrap from "./WaterTrap";
 import FinishFlag from "./FinishFlag";
 import Mound from "./Mound";
 

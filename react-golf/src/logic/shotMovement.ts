@@ -29,13 +29,11 @@ export async function movePlayerBall(
   // Add collision detection here
   const collisionResults = handleCollision(player, gameObjects);
   if (collisionResults) {
-    const playerRect = player.getBoundingClientRect();
-
     collisionResults.forEach((result) => {
       const collisionResponseResult = handleCollisionResponse(
         result,
         [velocityX, velocityY],
-        playerRect
+        player
       );
 
       // Set the velocity to the collision response velocity
@@ -75,15 +73,6 @@ function normalizeVelocity() {
     velocityX = (velocityX / currentSpeed) * MAX_SPEED;
     velocityY = (velocityY / currentSpeed) * MAX_SPEED;
   }
-}
-
-function formatDecimals(number: number, decimals: number) {
-  const formatted = number.toLocaleString("en-US", {
-    minimumFractionDigits: decimals,
-    maximumFractionDigits: decimals,
-  });
-
-  return Number(formatted);
 }
 
 const TIME_TO_RESET = 1000;
