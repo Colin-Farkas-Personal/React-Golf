@@ -12,6 +12,7 @@ import SandTrap from "./SandTrap";
 import FinishFlag from "./FinishFlag";
 import Mound from "./Mound";
 import Stone from "./Stone";
+import WaterTrap from "./WaterTrap";
 
 function App() {
   const [powerProcent, setPowerProcent] = useState(0);
@@ -25,14 +26,15 @@ function App() {
           >
             {/* <MouseOutline /> */}
             <CourseGround size="small">
-              <Mound size={100} x={20} y={50}>
-                <SandTrap size={40} />
-              </Mound>
-              <Pit size={80} x={90} y={50}>
+              <Pit x={15} y={25} size={80}>
                 <FinishFlag />
               </Pit>
-              <Stone size={60} x={60} y={50} rotate={45} />
-
+              <Mound size={80} x={15} y={75}>
+                <FinishFlag />
+              </Mound>
+              <WaterTrap x={40} y={25} size={80} />
+              <SandTrap x={40} y={75} size={80} />
+              <Stone x={65} y={50} size={80} rotate={45} />
               <PlayerBall startingPositionX={10} />
             </CourseGround>
             <Power power={powerProcent} />

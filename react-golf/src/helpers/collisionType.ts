@@ -189,13 +189,14 @@ export function isCircleInPolygon(
 // CIRCLE/CIRCLE
 export interface isCircleInCircleReturn {
   border: boolean;
+  half: boolean;
   inside: boolean;
 }
 export function isCircleInCircle(
   circle1: Circle,
   circle2: Circle
 ): isCircleInCircleReturn {
-  let resultCollision = { border: false, inside: false };
+  let resultCollision = { border: false, half: false, inside: false };
 
   // Circle 1
   const circle1X = circle1.point.x;
@@ -217,12 +218,17 @@ export function isCircleInCircle(
   // radii, the circles are touching!
   if (distance <= circle1Radius + circle2Radius) {
     // TODO: Uncomment if circle-border-collision is needed in the future
-    //resultCollision = { border: true, inside: false };
+    //resultCollision = { ...resultCollision, border: true };
+  }
+
+  // Check if circle1 is halfway inside circle2
+  if (distance <= Math.abs(circle2Radius - circle1Radius / 2)) {
+    resultCollision = { ...resultCollision, half: true };
   }
 
   // Check if circle1 is fully inside circle2
-  if (distance <= Math.abs(circle2Radius - circle1Radius / 2)) {
-    resultCollision = { border: false, inside: true };
+  if (distance <= Math.abs(circle2Radius - circle1Radius)) {
+    resultCollision = { ...resultCollision, inside: true };
   }
 
   return resultCollision;

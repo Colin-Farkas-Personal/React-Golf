@@ -1,11 +1,15 @@
-import { isCircleInPolygonReturn } from "../helpers/collisionType";
+import {
+  isCircleInCircleReturn,
+  isCircleInPolygonReturn,
+} from "../helpers/collisionType";
 import { handleCollisionReturn } from "./collisionHandler";
 import { sandEffect } from "./effects/sandEffect";
-import { finishEffect } from "./effects/finishEffect";
+import { restartEffect } from "./effects/restartEffect";
 import { pullEffect } from "./effects/pullEffect";
 import { pushEffect } from "./effects/pushEffect";
 import { getCircle } from "../helpers/circle";
 import { reflectionEffect } from "./effects/reflectionEffect";
+import { finishEffect } from "./effects/finishEffect";
 
 function defaultCollisionResponse(
   resultResponse: handleCollisionResponseReturn,
@@ -30,10 +34,11 @@ export function handleCollisionResponse(
     isInHole: false,
   } as handleCollisionResponseReturn;
 
+  const lineDetails = details as isCircleInPolygonReturn;
+  const circleDetails = details as isCircleInCircleReturn;
+
   switch (objectRef.effect) {
     case "BOUNCE": {
-      const lineDetails = details as isCircleInPolygonReturn;
-
       return {
         ...resultResponse,
         velocity: reflectionEffect(lineDetails, velocity),
@@ -41,16 +46,22 @@ export function handleCollisionResponse(
     }
 
     case "FINNISH": {
-      return { ...resultResponse, isInHole: true };
+      return { ...resultResponse, isInHole: finishEffect(circleDetails) };
     }
 
     case "SLOW": {
-      return { ...resultResponse, velocity: sandEffect(velocity) };
+      return {
+        ...resultResponse,
+        velocity: sandEffect(velocity),
+      };
     }
 
     case "RESTART": {
       // Reload Page
-      return { ...resultResponse, velocity: finishEffect(velocity) };
+      return {
+        ...resultResponse,
+        velocity: restartEffect(velocity),
+      };
     }
 
     case "PULLED": {
