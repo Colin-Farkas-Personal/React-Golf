@@ -221,7 +221,7 @@ export function isCircleInCircle(
   }
 
   // Check if circle1 is fully inside circle2
-  if (distance <= Math.abs(circle2Radius - circle1Radius)) {
+  if (distance <= Math.abs(circle2Radius - circle1Radius / 2)) {
     resultCollision = { border: false, inside: true };
   }
 
