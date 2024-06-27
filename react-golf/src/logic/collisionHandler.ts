@@ -60,7 +60,11 @@ function objectCollision(
 
     const circleCollisionResult = isCircleInCircle(playerCircle, objectCircle);
 
-    if (circleCollisionResult.border || circleCollisionResult.inside) {
+    if (
+      circleCollisionResult.border ||
+      circleCollisionResult.half ||
+      circleCollisionResult.inside
+    ) {
       return circleCollisionResult;
     }
   }
