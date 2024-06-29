@@ -41,6 +41,8 @@ export async function movePlayerBall(
       velocityY = collisionResponseResult.velocity[1];
 
       if (collisionResponseResult.isInHole) {
+        velocityX = 0;
+        velocityY = 0;
         setIsBallInHole(collisionResponseResult.isInHole);
       }
     });

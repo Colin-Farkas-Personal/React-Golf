@@ -15,7 +15,6 @@ export function pushEffect(
   let distance = Math.sqrt(dx * dx + dy * dy);
 
   // If the distance is less than or equal to the stop distance, set velocity to zero
-  console.log("Current distance: ", distance);
   if (distance <= MOUND_TOP_DISTANCE) {
     return currentVelocity;
   }

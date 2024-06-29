@@ -25,3 +25,46 @@
 .course-tilt-active {
   box-shadow: 0 4px 20px 0px var(--course-ground-color-box-shadow);
 }
+
+.success-animation {
+  animation: scaleUpDown 800ms ease-in-out, moveOutLeft 800ms 1400ms ease-in-out;
+  animation-fill-mode: forwards;
+}
+
+@keyframes scaleUpDown {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes moveOutLeft {
+  0% {
+    left: 0%;
+  }
+  100% {
+    left: -100%;
+    opacity: 0;
+  }
+}
+
+.next-level-animation {
+  animation: moveInRight 800ms ease-in-out;
+  animation-fill-mode: forwards;
+}
+
+@keyframes moveInRight {
+  0% {
+    right: -100%;
+    opacity: 0;
+  }
+  100% {
+    right: 0%;
+    opacity: 1;
+  }
+}
