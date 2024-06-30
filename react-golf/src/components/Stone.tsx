@@ -5,7 +5,7 @@ import { useAddGameObject } from "../hooks/useAddGameObject";
 
 interface StoneProps extends GameObject {}
 function Stone({ x = 50, y, size = 50, rotate }: StoneProps) {
-  const stoneRef = useRef(null);
+  const stoneRef = useRef<HTMLDivElement>(null);
   useAddGameObject("STONE", stoneRef);
 
   const stoneStyle = {

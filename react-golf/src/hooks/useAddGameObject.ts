@@ -5,10 +5,14 @@ export function useAddGameObject(
   name: RefName,
   ref: React.RefObject<HTMLElement>
 ) {
-  const { addObject } = useGameObjectsContext();
+  const { addObject, removeObject } = useGameObjectsContext();
   const id = useId();
 
   useEffect(() => {
     addObject(id, name, ref);
+
+    return () => {
+      removeObject(id);
+    };
   }, []);
 }

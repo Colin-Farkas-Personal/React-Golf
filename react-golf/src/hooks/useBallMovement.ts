@@ -10,35 +10,35 @@ export function useBallMovement(ballSpeed: number) {
   const { playerBallRef, setVelocity, setIsMoving } = usePlayerBallContext();
   const { objects } = useGameObjectsContext();
 
-  const movePlayer = useCallback(
-    (mousePositionCurrentValue: Velocity, powerProcentValue: number) => {
-      if (!isBallMoving) {
-        const direction = [
-          -mousePositionCurrentValue[0],
-          -mousePositionCurrentValue[1],
-        ] as Velocity;
-        const speed = (ballSpeed * powerProcentValue) / 100;
+  const movePlayer = (
+    mousePositionCurrentValue: Velocity,
+    powerProcentValue: number
+  ) => {
+    if (!isBallMoving) {
+      const direction = [
+        -mousePositionCurrentValue[0],
+        -mousePositionCurrentValue[1],
+      ] as Velocity;
+      const speed = (ballSpeed * powerProcentValue) / 100;
 
-        setIsBallMoving(true);
-        setIsMoving(true);
-        movePlayerBall(
-          direction,
-          speed,
-          playerBallRef.current as HTMLElement,
-          objects,
-          setIsBallInHole,
-          () => {
-            setIsBallMoving(false);
-            setIsMoving(false);
-          },
-          (currentVelocity) => {
-            setVelocity(currentVelocity);
-          }
-        );
-      }
-    },
-    [isBallMoving, ballSpeed, setIsBallInHole]
-  );
+      setIsBallMoving(true);
+      setIsMoving(true);
+      movePlayerBall(
+        direction,
+        speed,
+        playerBallRef.current as HTMLElement,
+        objects,
+        setIsBallInHole,
+        () => {
+          setIsBallMoving(false);
+          setIsMoving(false);
+        },
+        (currentVelocity) => {
+          setVelocity(currentVelocity);
+        }
+      );
+    }
+  };
 
   return {
     movePlayer,

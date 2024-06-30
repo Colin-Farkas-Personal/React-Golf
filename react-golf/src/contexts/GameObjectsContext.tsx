@@ -1,4 +1,4 @@
-import React, { RefObject, createContext, useRef } from "react";
+import React, { RefObject, createContext, useRef, useState } from "react";
 
 // EFFECTS AND OBJECTS LIST
 export type Effect =
@@ -45,11 +45,13 @@ export interface GameObjectsContext {
     name: RefName,
     refObject: RefObject<HTMLElement>
   ) => void;
+  removeObject: (id: string) => void;
 }
 
 const defaultComponentRefsContext: GameObjectsContext = {
   objects: [],
   addObject: () => {},
+  removeObject: () => {},
 };
 
 export const GameObjectsContext = createContext<GameObjectsContext>(
@@ -63,32 +65,40 @@ interface ComponentRefsProviderProps {
 export const GameObjectsProvider = ({
   children,
 }: ComponentRefsProviderProps) => {
-  const refArray = useRef<GameObject[]>([]);
+  const [refArray, setRefArray] = useState<GameObject[]>([]);
 
   function handleAddObject(
     id: string,
     name: RefName,
     refObject: RefObject<HTMLElement>
   ) {
-    const hasExistingObject = refArray.current.some(
-      (object) => object.id === id
-    );
+    const hasExistingObject = refArray.some((object) => object.id === id);
 
     if (!hasExistingObject) {
-      refArray.current.push({
-        id: id,
-        name: name,
-        refObject: refObject,
-        ...DEFAULT_VALUES[name],
-      });
+      setRefArray((prev) => [
+        ...prev,
+        {
+          id: id,
+          name: name,
+          refObject: refObject,
+          ...DEFAULT_VALUES[name],
+        },
+      ]);
     }
+  }
+
+  function handleRemoveObject(id: string) {
+    console.log("REMOVE - ", id);
+
+    setRefArray((prev) => prev.filter((object) => object.id !== id));
   }
 
   return (
     <GameObjectsContext.Provider
       value={{
-        objects: refArray.current,
+        objects: refArray,
         addObject: handleAddObject,
+        removeObject: handleRemoveObject,
       }}
     >
       {children}
